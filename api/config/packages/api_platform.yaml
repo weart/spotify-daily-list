@@ -8,7 +8,9 @@ parameters:
 api_platform:
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
-    title: Hello API Platform
+    title: Polls for tracks
+    # Allow using plain IDs for JSON format
+    allow_plain_identifiers: true
     version: 1.0.0
     # Varnish integration, remove if unwanted
     http_cache:

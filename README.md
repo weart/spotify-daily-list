@@ -51,3 +51,43 @@ Credits
 -------
 
 Created by [Kévin Dunglas](https://dunglas.fr). Commercial support available at [Les-Tilleuls.coop](https://les-tilleuls.coop).
+
+Usage
+-------
+In order to execute symfony commands:
+```shell
+docker-compose exec php bin/console
+```
+
+Create poll:
+```shell
+curl -X POST "https://localhost:8443/polls" -H  "accept: application/ld+json" -H  "Content-Type: application/json" -d "{}"`
+```
+
+Create track:
+```shell
+curl -X POST "http://localhost:8080/tracks" -H  "accept: application/ld+json" -H  "Content-Type: application/json" -d "{\"spotify_uri\": \"spotify:track:1ECc1EhfkRx08o8uIwYOxW\",\"youtube_uri\": \"t67NhxJhrUU\",\"artist\": \"Lágrimas de Sangre\",\"name\": \"Rojos y separatistas\",\"poll\": \"6a3a946c-c0f5-4a2a-9a1c-ab230c051206\"}"
+```
+```
+{
+"spotify_uri": "spotify:track:1ECc1EhfkRx08o8uIwYOxW",
+"youtube_uri": "t67NhxJhrUU",
+"artist": "Lágrimas de Sangre",
+"name": "Rojos y separatistas",
+"poll": "6a3a946c-c0f5-4a2a-9a1c-ab230c051206"
+}
+```
+
+Crate vote:
+```shell
+curl -X POST "https://localhost:8443/votes" -H  "accept: application/ld+json" -H  "Content-Type: application/json" -d "{  \"name\": \"lenin\",  \"poll\": \"6a3a946c-c0f5-4a2a-9a1c-ab230c051206\",  \"track\": \"29b44e2b-7f55-4ef5-b462-43bcaa8f02f9\"}"`
+```
+```
+{
+"name": "lenin",
+"poll": "6a3a946c-c0f5-4a2a-9a1c-ab230c051206",
+"track": "29b44e2b-7f55-4ef5-b462-43bcaa8f02f9"
+}
+```
+
+docker-compose exec db psql --dbname api --username api-platform --password
