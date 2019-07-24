@@ -74,7 +74,8 @@ class Poll
         $this->id = Uuid::uuid4();
         $this->startDate = new \DateTime();
         $this->name = sprintf('Poll created at %s', $this->startDate->format('d/m/Y H:i'));
-        $this->tracks = $this->votes = new ArrayCollection();
+        $this->tracks = new ArrayCollection();
+        $this->votes = new ArrayCollection();
     }
 
     public function __toString()
@@ -95,5 +96,15 @@ class Poll
     public function finishPoll(): void
     {
         $this->endDate = new \DateTime();
+    }
+
+    public function addTrack(Track $track): bool
+    {
+        return $this->tracks->add($track);
+    }
+
+    public function addVote(Vote $vote): bool
+    {
+        return $this->votes->add($vote);
     }
 }

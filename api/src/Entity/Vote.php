@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiResource(
  *     iri="https://schema.org/Rating",
- *     collectionOperations={},
+ *     collectionOperations={"get"},
  *     itemOperations={"get","put","delete"}
  * )
  * @ORM\Entity

@@ -90,4 +90,12 @@ curl -X POST "https://localhost:8443/votes" -H  "accept: application/ld+json" -H
 }
 ```
 
+Executes queries in postgres:
+```shell
 docker-compose exec db psql --dbname api --username api-platform --password
+```
+
+Add fixtures:
+```shell
+docker-compose exec php bin/console doctrine:fixtures:load -n
+```
