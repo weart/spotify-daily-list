@@ -99,3 +99,8 @@ Add fixtures:
 ```shell
 docker-compose exec php bin/console doctrine:fixtures:load -n
 ```
+
+Docs used:
+https://junghanns.it/posts/cqrs-and-eventsourcing-with-api-platform-ii/
+https://www.nielsvandermolen.com/symfony-4-api-platform-application/
+/opt/ngrok http https://localhost:8443

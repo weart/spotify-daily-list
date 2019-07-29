@@ -118,6 +118,9 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "jwilsson/spotify-web-api-php": {
+        "version": "2.8.0"
+    },
     "league/html-to-markdown": {
         "version": "4.8.1"
     },

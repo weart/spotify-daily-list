@@ -29,7 +29,7 @@ class Track
 
     /**
      * @var string Spotify resource identifier
-     * @example spotify:track:6rqhFgbbKwnb9MLmUQDhG6
+     * @example 6rqhFgbbKwnb9MLmUQDhG6
      * @see https://developer.spotify.com/documentation/web-api/#spotify-uris-and-ids
      * @see https://developer.spotify.com/documentation/web-api/reference/tracks/get-track/
      *
@@ -93,6 +93,12 @@ class Track
     public function getId(): Uuid
     {
         return $this->id;
+    }
+
+    public function getSpotifyUri(): string
+    {
+        return $this->spotify_uri ?
+            sprintf('spotify:track:%s', $this->spotify_uri) : '';
     }
 
     public function getProposalDate(): \DateTime

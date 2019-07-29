@@ -51,6 +51,15 @@ class Poll
      */
     private $endDate;
 
+    /**
+     * @var string Spotify resource identifier
+     * @example 5IKFuffeFlNxAAvzjSVUsZ
+     * @see https://developer.spotify.com/documentation/web-api/#spotify-uris-and-ids
+     * @see https://developer.spotify.com/documentation/web-api/reference/tracks/get-track/
+     *
+     * @ORM\Column(nullable=true)
+     */
+    public $spotify_playlist_uri;
 
     /**
      * @var Track[] Available tracks for this poll
@@ -91,6 +100,17 @@ class Poll
     public function getStartDate(): \DateTime
     {
         return $this->startDate;
+    }
+
+    public function getEndDate(): ?\DateTime
+    {
+        return $this->endDate;
+    }
+
+    public function getSpotifyUri(): string
+    {
+        return $this->spotify_playlist_uri ?
+            sprintf('spotify:playlist:%s', $this->spotify_playlist_uri) : '';
     }
 
     public function finishPoll(): void

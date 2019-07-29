@@ -8,7 +8,7 @@ parameters:
 api_platform:
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
-    title: Polls for tracks
+    title: Share & Rate Songs
     # Allow using plain IDs for JSON format
     allow_plain_identifiers: true
     version: 1.0.0
