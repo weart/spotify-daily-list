@@ -5,14 +5,13 @@ namespace App\Service;
 use App\Events\SpotifyLogged;
 use SpotifyWebAPI\Session as SpotifySession;
 use SpotifyWebAPI\SpotifyWebAPI;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class SpotifyService
 {
     const CLIENT_ID = '436110e3b7a548debaf2520ffc745888';
     const CLIENT_SECRET = '891fadc73eda4b08bb9daba41992cd11';
-    const REDIRECT_URI = 'http://a6b993f4.ngrok.io/api/spotify_callback';
+    const REDIRECT_URI = 'http://293de914.ngrok.io/spotify/callback';
 
     private $dispatcher;
 

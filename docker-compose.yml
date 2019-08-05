@@ -79,21 +79,46 @@ services:
     ports:
       - "1337:80"
 
-  client:
+#  client:
     # Use a static website hosting service in production
     # See https://facebook.github.io/create-react-app/docs/deployment
-    image: ${CONTAINER_REGISTRY_BASE}/client
-    build:
-      context: ./client
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/client
-    env_file:
-      - ./client/.env
+#    image: ${CONTAINER_REGISTRY_BASE}/client
+#    build:
+#      context: ./client
+#      cache_from:
+#        - ${CONTAINER_REGISTRY_BASE}/client
+#    env_file:
+#      - ./client/.env
+#    volumes:
+#      - ./client:/usr/src/client:rw,cached
+#      - /usr/src/client/node_modules
+#    ports:
+#      - "80:3000"
+
+  client-quasar:
+#    image: ${CONTAINER_REGISTRY_BASE}/client
+#    image: mhart/alpine-node:12
+#    build:
+#      context: ./client-quasar
+#      cache_from:
+#        - ${CONTAINER_REGISTRY_BASE}/client
+#    env_file:
+#      - ./client-quasar/.env
+#    volumes:
+#      - ./client-quasar:/usr/src/client:rw,cached
+#      - /usr/src/client/node_modules
+#      - ./client-quasar:/app:rw,cached
+#      - /app/node_modules
+#    ports:
+#      - "82:3000"
+    image: lyseontech/quasar
+    command: quasar dev
     volumes:
-      - ./client:/usr/src/client:rw,cached
-      - /usr/src/client/node_modules
+#      - ./client-quasar:/var/www/app
+      - ./client-quasar:/home/node/app
     ports:
-      - "80:3000"
+#      - 8000:8000
+      - "82:3000"
 
   admin:
     # Use a static website hosting service in production
@@ -114,7 +139,8 @@ services:
     build:
       context: ./h2-proxy
     depends_on:
-      - client
+#      - client
+      - client-quasar
       - admin
       - api
       - cache-proxy

@@ -15,7 +15,7 @@ class AppFixtures extends Fixture
         //Create a finished poll
         $poll_finished = new Poll();
         sleep(2);
-        $poll_finished->finishPoll();
+        $poll_finished->markAsEnded();
 
         //Create a ongoing poll
         $poll_open = new Poll();
@@ -33,7 +33,7 @@ class AppFixtures extends Fixture
             $track->artist = "Lágrimas de Sangre";
             $track->name = "Rojos y separatistas";
             $track->youtube_uri = "t67NhxJhrUU";
-            $track->spotify_uri = "spotify:track:1ECc1EhfkRx08o8uIwYOxW";
+            $track->spotify_uri = "1ECc1EhfkRx08o8uIwYOxW";
             $poll->addTrack($track);
 
             //Add Votes
@@ -51,7 +51,7 @@ class AppFixtures extends Fixture
             $track->artist = "Toti Soler";
             $track->name = "Em Dius Que El Nostre Amor";
             $track->youtube_uri = "rd55dcyjCSY";
-            $track->spotify_uri = "spotify:track:5o31tm7aa5PdsThhw36it9";
+            $track->spotify_uri = "5o31tm7aa5PdsThhw36it9";
             $poll->addTrack($track);
 
             //Add Votes

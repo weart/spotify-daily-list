@@ -1,0 +1,6 @@
+export const RESET = 'POLL_LIST_RESET';
+export const SET_ITEMS = 'POLL_LIST_SET_ITEMS';
+export const SET_ERROR = 'POLL_LIST_SET_ERROR';
+export const SET_VIEW = 'POLL_LIST_SET_VIEW';
+export const TOGGLE_LOADING = 'POLL_LIST_TOGGLE_LOADING';
+export const SET_TOTALITEMS = 'POLL_LIST_SET_TOTALITEMS';

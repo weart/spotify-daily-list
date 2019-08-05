@@ -104,3 +104,10 @@ Docs used:
 https://junghanns.it/posts/cqrs-and-eventsourcing-with-api-platform-ii/
 https://www.nielsvandermolen.com/symfony-4-api-platform-application/
 /opt/ngrok http https://localhost:8443
+
+docker-compose exec client-quasar yarn global add @api-platform/client-generator
+docker-compose exec client-quasar npm install -g @quasar/cli
+docker-compose exec client-quasar yarn install
+docker-compose exec client-quasar yarn start
+
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' spotifydailylist_client-quasar_1

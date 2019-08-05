@@ -63,7 +63,7 @@ class User implements UserInterface
     private $spotify_credentials;
 
     /**
-     * @var string
+     * @var bool
      *
      * @ORM\Column(name="spotify_list_owner", type="boolean", nullable=false, options={"default" : 0})
      */

@@ -1,0 +1,78 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Book;
+use App\Entity\Poll;
+use App\Entity\User;
+use App\Service\SpotifyService;
+use Doctrine\ORM\EntityManagerInterface;
+
+class FinishPollController
+{
+    private $spotifyService;
+    private $entityManager;
+
+    public function __construct(SpotifyService $spotifyService, EntityManagerInterface $entityManager)
+    {
+        $this->spotifyService = $spotifyService;
+        $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @Route(
+     *     name="poll_finish",
+     *     path="/polls/{id}/finish",
+     *     requirements={"uuid"="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"},
+     *     methods={"PUT"},
+     *     defaults={
+     *       "_controller"="\App\Controller\FinishPollController::class"
+     *     }
+     * )
+     */
+    public function __invoke(Poll $data): Poll
+    {
+        var_dump($data);exit;
+//        $pollPublishingHandler->handle($data);
+
+        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
+        $client = $spotifyService->getClient($accessToken);
+
+        $poll = $entityManager->find(Poll::class, $id);
+        if (!$poll) {
+            throw new \Exception('Invalid poll id');
+        }
+
+
+        if ($poll->restartPoll) {
+            if (empty($poll->spotifyWinnerPlaylistUri) || empty($poll->spotifyHistoricPlaylistUri)) {
+                throw new \Exception('Poll without winner & historical playlist');
+            }
+            $tracks = $poll->getTrackOrderByVoted();
+            if (!$client->addPlaylistTracks($poll->spotifyWinnerPlaylistUri, current($tracks)['spotify_uri']))
+            {
+                throw new \Exception(sprintf(
+                    'Error adding the track winner %s into the playlist: %s',
+                    current($tracks)['spotify_uri'], $poll->spotifyWinnerPlaylistUri
+                ));
+            }
+            if (!$client->addPlaylistTracks($poll->spotifyHistoricPlaylistUri, array_column($tracks, 'spotify_uri')))
+            {
+                throw new \Exception(sprintf(
+                    'Error adding %s historical tracks into the playlist: %s',
+                    count($tracks), $poll->spotifyHistoricPlaylistUri
+                ));
+            }
+            if (!$client->deletePlaylistTracks($poll->spotifyPlaylistUri))
+            {
+                throw new \Exception(sprintf('Error while truncate the playlist: %s',$poll->spotifyPlaylistUri));
+            }
+
+        } else {
+            $poll->markAsEnded();
+            $entityManager->persist($poll);
+            $entityManager->flush();
+        }
+        return $poll;
+    }
+}

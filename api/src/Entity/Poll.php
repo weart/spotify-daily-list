@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
+//use App\Controller\FinishPollController;
+use App\Controller\SpotifyController;
 
 /**
  * Poll / Election / Referendum
@@ -15,7 +17,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     iri="https://schema.org/Question",
  *     collectionOperations={"get","post"},
- *     itemOperations={"get","put","delete"}
+ *     itemOperations={
+ *         "get",
+ *         "put",
+ *         "delete",
+ *         "finish"={"path"="/polls/{id}/finish", "method"="PUT"},
+ *         "finish"={"path"="/polls/{id}/restart", "method"="PUT"},
+ *     }
  * )
  * @ORM\Entity
  */
@@ -47,7 +55,7 @@ class Poll
     /**
      * @var \DateTimeInterface|null The end date of this poll
      *
-     * @ORM\Column(type="datetime",nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $endDate;
 
@@ -59,7 +67,34 @@ class Poll
      *
      * @ORM\Column(nullable=true)
      */
-    public $spotify_playlist_uri;
+    public $spotifyPlaylistUri;
+
+    /**
+     * @var bool The poll is never closed, the winner song goes to winner playlist and the others to the historic playlist
+     *
+     * @ORM\Column(type="boolean", nullable=false, options={"default" : 0})
+     */
+    public $restartPoll;
+
+    /**
+     * @var string Spotify resource identifier
+     * @example 5IKFuffeFlNxAAvzjSVUsZ
+     * @see https://developer.spotify.com/documentation/web-api/#spotify-uris-and-ids
+     * @see https://developer.spotify.com/documentation/web-api/reference/tracks/get-track/
+     *
+     * @ORM\Column(nullable=true)
+     */
+    public $spotifyWinnerPlaylistUri;
+
+    /**
+     * @var string Spotify resource identifier
+     * @example 5IKFuffeFlNxAAvzjSVUsZ
+     * @see https://developer.spotify.com/documentation/web-api/#spotify-uris-and-ids
+     * @see https://developer.spotify.com/documentation/web-api/reference/tracks/get-track/
+     *
+     * @ORM\Column(nullable=true)
+     */
+    public $spotifyHistoricPlaylistUri;
 
     /**
      * @var Track[] Available tracks for this poll
@@ -83,6 +118,7 @@ class Poll
         $this->id = Uuid::uuid4();
         $this->startDate = new \DateTime();
         $this->name = sprintf('Poll created at %s', $this->startDate->format('d/m/Y H:i'));
+        $this->restartPoll = false;
         $this->tracks = new ArrayCollection();
         $this->votes = new ArrayCollection();
     }
@@ -109,11 +145,11 @@ class Poll
 
     public function getSpotifyUri(): string
     {
-        return $this->spotify_playlist_uri ?
-            sprintf('spotify:playlist:%s', $this->spotify_playlist_uri) : '';
+        return $this->spotifyPlaylistUri ?
+            sprintf('spotify:playlist:%s', $this->spotifyPlaylistUri) : '';
     }
 
-    public function finishPoll(): void
+    public function markAsEnded(): void
     {
         $this->endDate = new \DateTime();
     }
@@ -126,5 +162,33 @@ class Poll
     public function addVote(Vote $vote): bool
     {
         return $this->votes->add($vote);
+    }
+
+    public function getTracks(): array
+    {
+        return $this->tracks->getValues();
+    }
+
+    public function getVotes(): array
+    {
+        return $this->votes->getValues();
+    }
+
+    public function getTrackOrderByVoted(): array
+    {
+        foreach ($this->tracks as $track) {
+            $track->rating = 0;
+        }
+        foreach ($this->votes as $vote) {
+            $vote->track->rating += $vote->rating;
+//            $track = $this->tracks->get($vote->track);
+//            $track->rating += $vote->rating;
+        }
+
+        $it = $this->tracks->getIterator();
+        $it->uasort(function ($a, $b) {
+            return (int) $a->rating > (int) $b->rating ? 1 : -1;
+        });
+        return $it->getArrayCopy();
     }
 }

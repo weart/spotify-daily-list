@@ -1,0 +1,25 @@
+#FROM node:11.5-alpine
+FROM mhart/alpine-node:12
+
+#RUN mkdir -p /usr/src/client
+
+#WORKDIR /usr/src/client
+
+WORKDIR /app
+
+RUN ls -alh
+
+RUN npm install -g @quasar/cli
+
+RUN yarn global add @api-platform/client-generator
+
+# Prevent the reinstallation of node modules at every changes in the source code
+COPY package.json yarn.lock ./
+RUN npm install
+
+#COPY . ./
+COPY . .
+
+#CMD yarn dev
+#CMD npm dev
+CMD quasar dev
