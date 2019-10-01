@@ -1,4 +1,5 @@
 import pollRoutes from 'src/router/poll';
+import organizationRoutes from 'src/router/organization';
 
 const routes = [
   {
@@ -11,6 +12,7 @@ const routes = [
         component: () => import('pages/Index.vue'),
       },
       ...pollRoutes,
+      ...organizationRoutes,
     ],
   },
 ];

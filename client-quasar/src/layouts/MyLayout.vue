@@ -4,7 +4,7 @@
       <q-toolbar>
 
         <q-toolbar-title class="text-center" to="/">
-          Share & Rate Songs: {{ this.$route.name }}
+          Discoveryfy: {{ this.$route.name }}
         </q-toolbar-title>
         <div><q-btn push icon="account_box" type="a" :href="spotify_login" target="_blank">
           {{ $t('Login') }}

@@ -11,7 +11,7 @@ class SpotifyService
 {
     const CLIENT_ID = '436110e3b7a548debaf2520ffc745888';
     const CLIENT_SECRET = '891fadc73eda4b08bb9daba41992cd11';
-    const REDIRECT_URI = 'http://293de914.ngrok.io/spotify/callback';
+    const REDIRECT_URI = 'http://423067ff.ngrok.io/spotify/callback';
 
     private $dispatcher;
 

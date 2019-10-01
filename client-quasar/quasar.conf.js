@@ -142,9 +142,9 @@ module.exports = function (ctx) {
       // workboxPluginMode: 'InjectManifest',
       // workboxOptions: {}, // only for NON InjectManifest
       manifest: {
-        // name: 'Share & Rate Songs',
-        // short_name: 'Share & Rate Songs',
-        // description: 'Tiny WebApp for create collaborative playlist with your collegues and rate the songs',
+        name: 'Discoveryfy',
+        short_name: 'Discoveryfy',
+        description: 'Tiny WebApp for Share & Rate Songs in Spotify',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

@@ -1,8 +1,8 @@
 {
   "name": "client-quasar",
   "version": "0.0.1",
-  "description": "Tiny WebApp for create collaborative playlists with your colleagues and rate the songs",
-  "productName": "Share & Rate Songs",
+  "description": "Tiny WebApp for Share & Rate Songs in Spotify",
+  "productName": "Discoveryfy",
   "cordovaId": "org.cordova.quasar.app",
   "author": "Leninux",
   "private": true,

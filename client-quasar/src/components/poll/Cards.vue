@@ -33,6 +33,7 @@ import card from './Card';
 
 export default {
   name: 'Polls',
+  props: ['organization'],
   components: {
     card,
   },
@@ -45,6 +46,13 @@ export default {
     };
   },
   created() {
+    // const endpoint
+    // const entryPoint = ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/');
+    // let params = {};
+    // if (this.organization) {
+    //     params.set()
+    // }
+    //   /organizations/{id}/polls
     fetchSimple('polls').then((data) => {
       this.polls = data;
       this.isLoading = false;
@@ -52,13 +60,15 @@ export default {
   },
   watch: {
     polls() {
-      this.polls.forEach((poll) => {
-        if (poll.endDate && poll.endDate.length > 0) {
-          this.currentPolls.push(poll);
-        } else {
-          this.pastPolls.push(poll);
-        }
-      });
+      if (this.polls) {
+        this.polls.forEach((poll) => {
+          if (poll.endDate && poll.endDate.length > 0) {
+            this.currentPolls.push(poll);
+          } else {
+            this.pastPolls.push(poll);
+          }
+        });
+      }
     },
   },
 };

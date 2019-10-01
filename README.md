@@ -1,113 +1,65 @@
-<h1 align="center"><a href="https://api-platform.com"><img src="https://api-platform.com/logo-250x250.png" alt="API Platform"></a></h1>
+# Discoveryfy (API)
 
-API Platform is a next-generation web framework designed to easily create API-first projects without compromising extensibility
-and flexibility:
+WIP
 
-* Design your own data model as plain old PHP classes or [**import an existing one**](https://api-platform.com/docs/schema-generator)
-  from the [Schema.org](https://schema.org/) vocabulary
-* **Expose in minutes a hypermedia REST or a GraphQL API** with pagination, data validation, access control, relation embedding,
-  filters and error handling...
-* Benefit from Content Negotiation: [GraphQL](http://graphql.org), [JSON-LD](http://json-ld.org), [Hydra](http://hydra-cg.com),
-  [HAL](http://stateless.co/hal_specification.html), [JSONAPI](https://jsonapi.org/), [YAML](http://yaml.org/), [JSON](http://www.json.org/), [XML](https://www.w3.org/XML/) and [CSV](https://www.ietf.org/rfc/rfc4180.txt) are supported out of the box
-* Enjoy the **beautiful automatically generated API documentation** (Swagger/[OpenAPI](https://www.openapis.org/))
-* Add [**a convenient Material Design administration interface**](https://api-platform.com/docs/admin) built with [React](https://reactjs.org/)
-  without writing a line of code
-* **Scaffold fully functional Progressive-Web-Apps and mobile apps** built with [React](https://api-platform.com/docs/client-generator/react), [Vue.js](https://api-platform.com/docs/client-generator/vuejs) or [React Native](https://api-platform.com/docs/client-generator/react-native) thanks to [the client
-  generator](https://api-platform.com/docs/client-generator) (a Vue.js generator is also available)
-* Install a development environment and deploy your project in production using **[Docker](https://api-platform.com/docs/distribution#using-the-official-distribution-recommended)** and [Kubernetes](https://api-platform.com/docs/deployment/kubernetes)
-* Easily add **[JSON Web Token](https://api-platform.com/docs/core/jwt) or [OAuth](https://oauth.net/) authentication**
-* Create specs and tests with a **developer friendly API testing tool** on top of [Behat](http://behat.org/)
-
-[![Build Status](https://travis-ci.org/api-platform/core.svg?branch=master)](https://travis-ci.org/api-platform/core)
-[![Build status](https://ci.appveyor.com/api/projects/status/grwuyprts3wdqx5l?svg=true)](https://ci.appveyor.com/project/dunglas/dunglasapibundle)
-[![codecov](https://codecov.io/gh/api-platform/core/branch/master/graph/badge.svg)](https://codecov.io/gh/api-platform/core)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/92d78899-946c-4282-89a3-ac92344f9a93/mini.png)](https://insight.sensiolabs.com/projects/92d78899-946c-4282-89a3-ac92344f9a93)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/api-platform/core/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/api-platform/core/?branch=master)
-
-The official project documentation is available **[on the API Platform website](https://api-platform.com)**.
-
-API Platform embraces open web standards (OpenAPI, JSON-LD, GraphQL, Hydra, HAL, JSONAPI, JWT, OAuth, HTTP...) and the [Linked Data](https://www.w3.org/standards/semanticweb/data)
-movement. Your API will automatically expose structured data in Schema.org/JSON-LD.
-It means that your API Platform application is usable **out of the box** with technologies of the semantic web.
-
-It also means that **your SEO will be improved** because **[Google leverages these formats](https://developers.google.com/search/docs/guides/intro-structured-data)**.
-
-Last but not least, the server component of API Platform is built on top of the [Symfony](https://symfony.com) framework,
-while client components leverage [React](https://reactjs.org/) (a [Vue.js](https://vuejs.org/) flavor is also available).
-It means than you can:
-
-* use **thousands of Symfony bundles and React components** with API Platform
-* integrate API Platform in **any existing Symfony or React application**
-* reuse **all your Symfony and React skills**, benefit of the incredible amount of documentation available
-* enjoy the popular [Doctrine ORM](http://www.doctrine-project.org/projects/orm.html) (used by default, but fully optional:
-  you can use the data provider you want, including but not limited to MongoDB and ElasticSearch)
-
-Install
+Docs used
 -------
-
-[Read the official "Getting Started" guide](https://api-platform.com/docs/distribution).
-
-Credits
--------
-
-Created by [Kévin Dunglas](https://dunglas.fr). Commercial support available at [Les-Tilleuls.coop](https://les-tilleuls.coop).
-
-Usage
--------
-In order to execute symfony commands:
-```shell
-docker-compose exec php bin/console
-```
-
-Create poll:
-```shell
-curl -X POST "https://localhost:8443/polls" -H  "accept: application/ld+json" -H  "Content-Type: application/json" -d "{}"`
-```
-
-Create track:
-```shell
-curl -X POST "http://localhost:8080/tracks" -H  "accept: application/ld+json" -H  "Content-Type: application/json" -d "{\"spotify_uri\": \"spotify:track:1ECc1EhfkRx08o8uIwYOxW\",\"youtube_uri\": \"t67NhxJhrUU\",\"artist\": \"Lágrimas de Sangre\",\"name\": \"Rojos y separatistas\",\"poll\": \"6a3a946c-c0f5-4a2a-9a1c-ab230c051206\"}"
-```
-```
-{
-"spotify_uri": "spotify:track:1ECc1EhfkRx08o8uIwYOxW",
-"youtube_uri": "t67NhxJhrUU",
-"artist": "Lágrimas de Sangre",
-"name": "Rojos y separatistas",
-"poll": "6a3a946c-c0f5-4a2a-9a1c-ab230c051206"
-}
-```
-
-Crate vote:
-```shell
-curl -X POST "https://localhost:8443/votes" -H  "accept: application/ld+json" -H  "Content-Type: application/json" -d "{  \"name\": \"lenin\",  \"poll\": \"6a3a946c-c0f5-4a2a-9a1c-ab230c051206\",  \"track\": \"29b44e2b-7f55-4ef5-b462-43bcaa8f02f9\"}"`
-```
-```
-{
-"name": "lenin",
-"poll": "6a3a946c-c0f5-4a2a-9a1c-ab230c051206",
-"track": "29b44e2b-7f55-4ef5-b462-43bcaa8f02f9"
-}
-```
-
-Executes queries in postgres:
-```shell
-docker-compose exec db psql --dbname api --username api-platform --password
-```
-
-Add fixtures:
-```shell
-docker-compose exec php bin/console doctrine:fixtures:load -n
-```
-
-Docs used:
 https://junghanns.it/posts/cqrs-and-eventsourcing-with-api-platform-ii/
 https://www.nielsvandermolen.com/symfony-4-api-platform-application/
-/opt/ngrok http https://localhost:8443
 
-docker-compose exec client-quasar yarn global add @api-platform/client-generator
-docker-compose exec client-quasar npm install -g @quasar/cli
-docker-compose exec client-quasar yarn install
-docker-compose exec client-quasar yarn start
+https://medium.com/@rebolon/how-to-bind-your-favorite-js-framework-with-symfony-4-8c9ba86e2b8d
+https://www.myalerts.org/demo/quasar#/
+https://github.com/Rebolon/php-sf-flex-webpack-encore-vuejs/blob/bff3370b3f98e87a008c1a5cf4a545ee8146433e/assets/js/form-quasar-vuejs/app.js
+https://github.com/Rebolon/php-sf-flex-webpack-encore-vuejs/blob/bff3370b3f98e87a008c1a5cf4a545ee8146433e/assets/js/form-quasar-vuejs/components/Book.vue
 
+Useful documentation:
+-------
+https://api-platform.com/docs/core/events/
+https://symfony.com/doc/current/reference/events.html#kernel-events
+https://quasar.dev/vue-components/
+
+Pending docs:
+-------
+https://vue-apollo.netlify.com/
+https://developer.okta.com/blog/2018/06/14/php-crud-app-symfony-vue
+https://github.com/hasura/graphql-engine/tree/master/community/sample-apps/quasar-framework-vue-graphql
+https://jasonwatmore.com/post/2018/07/06/vue-vuex-jwt-authentication-tutorial-example
+
+
+Useful commands
+-------
+Build &  start all containers:
+```bash
+docker-compose up --force-recreate -d
+```
+
+Check machine ip:
+```bash
 docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' spotifydailylist_client-quasar_1
+```
+
+Configure ngrok
+-------
+Create the file ~/.ngrok2/ngrok.yml with the follow content:
+```yaml
+authtoken: CopySecretHere
+remote_management: null
+tunnels:
+  api:
+    proto: http
+    addr: 8080
+  client-quasar:
+    proto: http
+    addr: 82
+```
+And launch the daemon:
+```bash
+/opt/ngrok start --all
+```
+
+
+Created using Api Platform
+-------
+<h1 align="center"><a href="https://api-platform.com"><img src="https://api-platform.com/logo-250x250.png" alt="API Platform"></a></h1>
+
+Created by [Kévin Dunglas](https://dunglas.fr). Commercial support available at [Les-Tilleuls.coop](https://les-tilleuls.coop).
