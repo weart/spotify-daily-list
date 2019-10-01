@@ -1,0 +1,351 @@
+<template>
+<q-page>
+<!--  <q-ajax-bar ref="bar" position="top" color="accent" size="10px" skip-hijack />-->
+
+  <q-toolbar class="q-my-md">
+    <q-breadcrumbs class="q-mr-sm">
+      <q-breadcrumbs-el
+        v-for="(breadcrumb, idx) in breadcrumbList"
+        :key="idx"
+        :label="breadcrumb.label"
+        :icon="breadcrumb.icon"
+        :to="breadcrumb.to"
+      />
+      <q-breadcrumbs-el :label="item.name" />
+    </q-breadcrumbs>
+    <q-space />
+    <div><q-btn flat round dense icon="add" @click="pollCreate" /></div>
+  </q-toolbar>
+
+  <!--
+  <q-spinner-audio
+    v-if="isLoading"
+    color="primary"
+    size="2em"
+  />
+  -->
+
+  <q-card flat bordered class="center-card">
+
+    <q-toolbar>
+      <q-card-section class="card-title">
+        <div>Tracks</div>
+      </q-card-section>
+      <q-space />
+      <q-btn flat round icon="library_music">
+        <q-tooltip>Go to Spotify playlist</q-tooltip>
+      </q-btn>
+      <q-btn flat rounded icon="add" label="Suggest new song">
+        <!--<q-tooltip>Suggest new song</q-tooltip>-->
+      </q-btn>
+      <q-btn flat rounded icon="how_to_vote" label="Vote!"
+             :loading="voteLoading" @click="voteCreate">
+        <template v-slot:loading>
+          <q-spinner-gears />
+        </template>
+      </q-btn>
+    </q-toolbar>
+
+    <q-separator />
+
+    <q-card-section style="max-height: 50vh" class="scroll">
+      <template v-if="!item || !item.tracks || item.tracks.length == 0">
+        <h5>Without songs</h5>
+      </template>
+      <template v-if="item && item.tracks.length > 0">
+        <tracks-list v-bind:poll="item"></tracks-list>
+      </template>
+    </q-card-section>
+
+  </q-card>
+
+  <br /><br />
+
+  <q-card flat bordered class="center-card">
+
+    <q-toolbar>
+      <q-card-section class="card-title">
+        <div>Properties</div>
+      </q-card-section>
+      <q-space />
+      <q-btn flat rounded icon="delete_forever" color="warning" label="Delete poll">
+        <q-tooltip>Delete poll</q-tooltip>
+      </q-btn>
+      <q-btn flat rounded icon="save" label="Save changes">
+        <q-tooltip>Save changes</q-tooltip>
+      </q-btn>
+
+    </q-toolbar>
+
+    <q-separator />
+
+    <q-card-section style="max-height: 50vh" class="scroll">
+      <q-form v-if="item">
+        <q-tabs
+          v-model="tab"
+          dense
+          class="text-grey"
+          active-color="primary"
+          indicator-color="primary"
+          align="justify"
+          narrow-indicator
+        >
+          <q-tab name="basic" label="Basic" />
+          <q-tab name="spotify" label="Spotify" />
+          <q-tab name="advanced" label="Advanced" />
+        </q-tabs>
+
+        <q-separator />
+
+        <q-tab-panels v-model="tab" animated>
+          <q-tab-panel name="basic">
+            <q-toggle label="Readonly"
+              v-model="readonly" color="primary" keep-color />
+            <q-toggle label="Disable"
+              v-model="disable" color="primary" keep-color />
+            <q-input label="id"
+              v-model="item.id" :readonly="readonly" :disable="disable" />
+            <q-input label="Organization"
+              v-model="item.organization.name" :readonly="readonly" :disable="disable" />
+            <q-input label="name"
+              v-model="item.name" :readonly="readonly" :disable="disable" />
+            <!-- timming -->
+            <q-input label="startDate"
+              v-model="item.startDate" :readonly="readonly" :disable="disable" />
+            <q-input label="endDate"
+              v-model="item.endDate" :readonly="readonly" :disable="disable" />
+            <q-input label="restartDate"
+              v-model="item.restartDate" :readonly="readonly" :disable="disable" />
+          </q-tab-panel>
+
+          <q-tab-panel name="spotify">
+            <!--
+            <q-input label="spotifyPlaylistImages"
+              v-model="item.spotifyPlaylistImages" :readonly="readonly" :disable="disable" />
+            -->
+            <q-input label="spotifyPlaylistUri"
+              v-model="item.spotifyPlaylistUri" :readonly="readonly" :disable="disable" />
+            <q-input label="spotifyWinnerPlaylistUri"
+              v-model="item.spotifyWinnerPlaylistUri" :readonly="readonly" :disable="disable" />
+            <q-input label="spotifyHistoricPlaylistUri"
+              v-model="item.spotifyHistoricPlaylistUri" :readonly="readonly" :disable="disable" />
+          </q-tab-panel>
+
+
+          <q-tab-panel name="advanced">
+            <q-list>
+              <q-item>
+                <q-item-section>
+                  <q-btn-toggle v-model="item.publicVisibility" spread rounded no-caps
+                    :readonly="readonly" :disable="disable" :options="[
+                      {label: 'Visible to everyone', value: true},
+                      {label: 'Visible only to members of the group', value: false},
+                    ]"
+                  />
+                </q-item-section>
+              </q-item>
+
+              <q-item>
+                <q-item-section>
+                  <q-btn-toggle v-model="item.anonCanVote" spread rounded no-caps
+                    :readonly="readonly" :disable="disable" :options="[
+                      {label: 'Anyone can vote', value: true},
+                      {label: 'Only members of the group can vote', value: false},
+                    ]"
+                  />
+                </q-item-section>
+              </q-item>
+
+              <q-item>
+                <q-item-section>
+                  <q-btn-toggle v-model="item.anonCanAddTrack" spread rounded no-caps
+                    :readonly="readonly" :disable="disable" :options="[
+                      {label: 'Anyone can suggest new tracks', value: true},
+                      {label: 'Only members of the group can suggest new tracks', value: false},
+                    ]"
+                  />
+                </q-item-section>
+              </q-item>
+
+              <q-item>
+                <q-item-section>
+                  <q-btn-toggle v-model="item.multipleUserTracks" spread rounded no-caps
+                    :readonly="readonly" :disable="disable" :options="[
+                      {label: 'Members of the group can suggest more than one track', value: true},
+                      {label: 'Members of the group can suggest only one track', value: false},
+                    ]"
+                  />
+                </q-item-section>
+              </q-item>
+
+              <q-item>
+                <q-item-section>
+                  <q-btn-toggle v-model="item.multipleAnonTracks" spread rounded no-caps
+                    :readonly="readonly" :disable="disable" :options="[
+                      {label: 'Anyone can suggest more than one track', value: true},
+                      {label: 'Anyone can suggest only one track', value: false},
+                    ]"
+                  />
+                </q-item-section>
+              </q-item>
+
+              <q-item>
+                <q-item-section avatar>
+                  <q-item-label>
+                    How many points can give anyone in one vote? (Between 0 and 100)
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section>
+                  <q-slider
+                    v-model="item.anonVotesMaxRating"
+                    :min="0"
+                    :max="100"
+                    label
+                    :readonly="readonly" :disable="disable"
+                  />
+                </q-item-section>
+              </q-item>
+
+              <q-item>
+                <q-item-section avatar>
+                  <q-item-label>
+                    How many point can give members of the group in one vote? (Between 1 and 100)
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section>
+                  <q-slider
+                    v-model="item.userVotesMaxRating"
+                    :min="1"
+                    :max="100"
+                    label
+                    :readonly="readonly" :disable="disable"
+                  />
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-tab-panel>
+        </q-tab-panels>
+      </q-form>
+    </q-card-section>
+
+  </q-card>
+</q-page>
+</template>
+
+<style>
+
+</style>
+
+<script>
+import { mapActions, mapGetters } from 'vuex';
+import tracksList from 'src/components/TracksList';
+
+export default {
+  name: 'Poll',
+  components: {
+    tracksList,
+  },
+  data() {
+    return {
+      voteLoading: false,
+      voteValid: false,
+      readonly: false,
+      disable: false,
+      tab: 'basic',
+    };
+  },
+  // Vuex
+  computed: mapGetters({
+    deleteError: 'poll/del/error',
+    error: 'poll/show/error',
+    isLoading: 'poll/show/isLoading',
+    item: 'poll/show/retrieved',
+  }),
+
+  beforeDestroy() {
+    this.reset();
+  },
+
+  created() {
+    this.breadcrumbList = this.$route.meta.breadcrumb;
+    this.retrieve(`/polls/${decodeURIComponent(this.$route.params.id)}`);
+  },
+
+  watch: {
+    // isLoading(val) {
+    //   if (val) {
+    //     this.$refs.bar.start();
+    //   } else {
+    //     this.$refs.bar.stop();
+    //   }
+    // },
+
+    error(message) {
+      this.$q.notify({
+        message,
+        color: 'red',
+        icon: 'error',
+        closeBtn: this.$t('Close'),
+      });
+    },
+
+    deleteError(message) {
+      this.$q.notify({
+        message,
+        color: 'red',
+        icon: 'error',
+        closeBtn: this.$t('Close'),
+      });
+    },
+  },
+
+  methods: {
+    ...mapActions({
+      del: 'poll/del/del',
+      reset: 'poll/show/reset',
+      retrieve: 'poll/show/retrieve',
+    }),
+
+    deleteItem() {
+      // eslint-disable-next-line
+      if (window.confirm(this.$t('Are you sure you want to delete this poll?'))) {
+        this.del(this.item).then(() => this.$router.push({ name: 'Polls' }));
+      }
+    },
+
+    // Not vuex
+    pollCreate() {
+      console.log('@todo pollCreate');
+      // put /polls & go
+      // this.$router.push({ name: 'Poll', params: { id: this.poll.id } });
+    },
+    voteCreate() {
+      // we set loading state
+      this.voteLoading = true;
+      // simulate a delay
+      setTimeout(() => {
+        // we're done, we reset loading state
+        this.voteLoading = false;
+        if (this.voteValid !== true) {
+          this.$q.notify({
+            message: 'Problems...',
+            color: 'warning',
+            icon: 'warning',
+            timeout: 3000,
+            position: 'bottom',
+          });
+        } else {
+          this.$q.notify({
+            message: 'Saved',
+            color: 'primary',
+            icon: 'cloud_done',
+            timeout: 3000,
+            position: 'bottom',
+          });
+        }
+      }, 3000);
+    },
+  },
+};
+
+</script>

@@ -78,6 +78,15 @@ module.exports = function (ctx) {
         'QSeparator',
         'QRating',
         'QList',
+
+        'QFooter',
+        'QSpinnerGears',
+        'QBtnToggle',
+        'QToggle',
+        'QSlider',
+        'QBtnGroup',
+        'QTabPanels',
+        'QTabPanel'
       ],
 
       directives: [

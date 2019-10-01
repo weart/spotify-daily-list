@@ -1,4 +1,4 @@
-# Discoveryfy (API)
+# Discoveryfy
 
 WIP
 

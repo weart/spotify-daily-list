@@ -77,7 +77,7 @@ class Organization
      * @ORM\Column(type="smallint", nullable=false, options={"default":1})
      * @Assert\NotNull
      */
-    private $canCreatePolls = User::ADMIN;
+    private $canCreatePolls = Membership::ADMIN;
 
     /**
      * @var Membership[] Members in this organization
@@ -96,7 +96,7 @@ class Organization
 
 
     public function __construct(
-        string $name, bool $publicVisibility = false, bool $publicMembership = false, int $canCreatePolls = User::ADMIN
+        string $name, bool $publicVisibility = false, bool $publicMembership = false, int $canCreatePolls = Membership::ADMIN
     ) {
         $this->id = Uuid::uuid4();
         $this->createdAt = new \DateTimeImmutable();

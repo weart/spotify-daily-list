@@ -4,7 +4,7 @@ import { ENTRYPOINT } from '../config/entrypoint';
 const MIME_TYPE = 'application/ld+json';
 
 export default function (id, options = {}) {
-  console.log('fetching');
+  console.log('fetching', id);
   if (typeof options.headers === 'undefined') Object.assign(options, { headers: new Headers() });
 
   if (options.headers.get('Accept') === null) options.headers.set('Accept', MIME_TYPE);
@@ -27,7 +27,7 @@ export default function (id, options = {}) {
   const entryPoint = ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/');
 
   return fetch(new URL(id, entryPoint), options).then((response) => {
-    console.log('fetched');
+    console.log('fetched', id, entryPoint);
     if (response.ok) return response;
 
     return response.json().then((json) => {

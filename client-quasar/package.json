@@ -1,9 +1,9 @@
 {
-  "name": "client-quasar",
+  "name": "Discoveryfy client",
   "version": "0.0.1",
   "description": "Tiny WebApp for Share & Rate Songs in Spotify",
   "productName": "Discoveryfy",
-  "cordovaId": "org.cordova.quasar.app",
+  "cordovaId": "cat.fabri.discoveryfy.app",
   "author": "Leninux",
   "private": true,
   "scripts": {
@@ -11,7 +11,8 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
-    "build:pwa": "quasar build -m pwa"
+    "build:pwa": "quasar build -m pwa",
+    "upgrade-interactive": "npm-check --update"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
@@ -24,7 +25,8 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.10.0",
     "eslint-loader": "^2.1.1",
-    "eslint-plugin-vue": "^5.0.0"
+    "eslint-plugin-vue": "^5.0.0",
+    "npm-check": "^5.9.0"
   },
   "engines": {
     "node": ">= 8.9.0",

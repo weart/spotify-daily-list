@@ -2,14 +2,16 @@
   <q-layout view="hHh lpR fFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn color="primary" icon="gavel" label="Polls" to="/polls" />
-        <q-btn icon="supervisor_account" label="Groups" to="/orgs" />
-        <q-space />
+        <q-btn-group push>
+          <q-btn icon="gavel" label="Polls" to="/polls" push style="background: #00932E;" />
+          <q-btn icon="supervisor_account" label="Organizations"
+                 to="/orgs" push style="background: #00932E;" />
+        </q-btn-group>
+
         <q-toolbar-title class="text-center" to="/">
           Discoveryfy: {{ this.$route.name }}
         </q-toolbar-title>
-        <q-space />
-        <q-btn push icon="account_box" type="a" :href="spotify_login" target="_blank">
+        <q-btn push icon="perm_identity" type="a" :href="spotify_login" target="_blank">
           {{ $t('Login') }}
         </q-btn>
       </q-toolbar>
@@ -37,7 +39,7 @@ import { openURL } from 'quasar';
 import { ENTRYPOINT } from 'src/config/entrypoint';
 
 export default {
-  name: 'MyLayout',
+  name: 'MyLayoutGrouped',
   data() {
     return {
       spotify_login: `${ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/')}spotify/login`,

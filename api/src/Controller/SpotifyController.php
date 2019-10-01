@@ -65,10 +65,11 @@ class SpotifyController extends AbstractController
      *     }
      *   )
      */
-    public function getTrackInfo($uri, SpotifyService $spotifyService, EntityManagerInterface $entityManager)
+    public function getTrackInfo($uri, SpotifyService $spotifyService) //, EntityManagerInterface $entityManager
     {
-        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
-        $client = $spotifyService->getClient($accessToken);
+//        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
+//        $client = $spotifyService->getClient($accessToken);
+        $client = $spotifyService->getClient();
 
         $trackInfo = $client->getTrack($uri);
         return $this->json([
@@ -85,6 +86,36 @@ class SpotifyController extends AbstractController
 
     /**
      * @Route(
+     *     name="spotify_playlist_info",
+     *     path="/spotify/playlist_info/{uri}",
+     *     requirements={"uri"="([a-zA-Z0-9]+)(.*)"},
+     *     methods={"GET"},
+     *     defaults={
+     *       "_controller"="\App\Controller\SpotifyController::getPlaylistInfo"
+     *     }
+     *   )
+     */
+    public function getPlaylistInfo($uri, SpotifyService $spotifyService) //, EntityManagerInterface $entityManager
+    {
+//        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
+//        $client = $spotifyService->getClient($accessToken);
+        $client = $spotifyService->getClient();
+
+        $playlistInfo = $client->getPlaylist($uri);
+        return $this->json([
+            'hydra:member' => [
+                'ok',
+                'playlist_id' => $uri,
+//                'artist_name' => current($playlistInfo['artists'])['name'],
+//                'track_name' => $playlistInfo['name'],
+//                'image' => next($playlistInfo['album']['images'])['url'], //second image
+                'all_info' => $playlistInfo
+            ]
+        ]);
+    }
+
+    /**
+     * @Route(
      *     name="spotify_playlist_create",
      *     path="/spotify/playlist/{name}",
      *     methods={"PUT"},
@@ -93,10 +124,11 @@ class SpotifyController extends AbstractController
      *     }
      *   )
      */
-    public function createPlaylist(string $name, SpotifyService $spotifyService, EntityManagerInterface $entityManager)
+    public function createPlaylist(string $name, SpotifyService $spotifyService) //, EntityManagerInterface $entityManager
     {
-        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
-        $client = $spotifyService->getClient($accessToken);
+//        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
+//        $client = $spotifyService->getClient($accessToken);
+        $client = $spotifyService->getClient();
 
         $playlist = $client->createPlaylist(['name' => $name, 'public' => true]);
         if (!$playlist)
@@ -116,12 +148,10 @@ class SpotifyController extends AbstractController
      *     }
      *   )
      */
-    public function addTrackToPlaylist(
-        string $playlist, string $track,
-        SpotifyService $spotifyService, EntityManagerInterface $entityManager
-    ) {
-        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
-        $client = $spotifyService->getClient($accessToken);
+    public function addTrackToPlaylist(string $playlist, string $track, SpotifyService $spotifyService) { //, EntityManagerInterface $entityManager
+//        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
+//        $client = $spotifyService->getClient($accessToken);
+        $client = $spotifyService->getClient();
 
         if (!$client->addPlaylistTracks($playlist, $track))
         {
@@ -140,10 +170,11 @@ class SpotifyController extends AbstractController
      *     }
      *   )
      */
-    public function getPlaylistTracks(string $playlist, SpotifyService $spotifyService, EntityManagerInterface $entityManager)
+    public function getPlaylistTracks(string $playlist, SpotifyService $spotifyService) //, EntityManagerInterface $entityManager
     {
-        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
-        $client = $spotifyService->getClient($accessToken);
+//        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
+//        $client = $spotifyService->getClient($accessToken);
+        $client = $spotifyService->getClient();
         return $this->json(
             $client->getPlaylist($playlist)
         );
@@ -166,8 +197,9 @@ class SpotifyController extends AbstractController
      */
     public function finishPoll($id, SpotifyService $spotifyService, EntityManagerInterface $entityManager): Poll
     {
-        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
-        $client = $spotifyService->getClient($accessToken);
+//        list($accessToken, $refreshToken) = $entityManager->getRepository(User::class)->getSpotifyCredentials();
+//        $client = $spotifyService->getClient($accessToken);
+        $client = $spotifyService->getClient();
 
         /**
          * @var $poll Poll
@@ -177,28 +209,28 @@ class SpotifyController extends AbstractController
             throw new \Exception('Invalid poll id');
         }
 
-        if ($poll->restartPoll) {
-            if (empty($poll->spotifyWinnerPlaylistUri) || empty($poll->spotifyHistoricPlaylistUri)) {
+        if (empty($poll->getRestartDate())) {
+            if (empty($poll->getSpotifyWinnerPlaylistUri()) || empty($poll->getSpotifyHistoricPlaylistUri())) {
                 throw new \Exception('Poll without winner & historical playlist');
             }
             $tracks = $poll->getTrackOrderByVoted();
-            if (!$client->addPlaylistTracks($poll->spotifyWinnerPlaylistUri, current($tracks)['spotify_uri']))
+            if (!$client->addPlaylistTracks($poll->getSpotifyWinnerPlaylistUri(), current($tracks)['spotify_uri']))
             {
                 throw new \Exception(sprintf(
                     'Error adding the track winner %s into the playlist: %s',
-                    current($tracks)['spotify_uri'], $poll->spotifyWinnerPlaylistUri
+                    current($tracks)['spotify_uri'], $poll->getSpotifyWinnerPlaylistUri()
                 ));
             }
-            if (!$client->addPlaylistTracks($poll->spotifyHistoricPlaylistUri, array_column($tracks, 'spotify_uri')))
+            if (!$client->addPlaylistTracks($poll->getSpotifyHistoricPlaylistUri(), array_column($tracks, 'spotify_uri')))
             {
                 throw new \Exception(sprintf(
                     'Error adding %s historical tracks into the playlist: %s',
-                    count($tracks), $poll->spotifyHistoricPlaylistUri
+                    count($tracks), $poll->getSpotifyHistoricPlaylistUri()
                 ));
             }
-            if (!$client->deletePlaylistTracks($poll->spotifyPlaylistUri))
+            if (!$client->deletePlaylistTracks($poll->getSpotifyPlaylistUri()))
             {
-                throw new \Exception(sprintf('Error while truncate the playlist: %s',$poll->spotifyPlaylistUri));
+                throw new \Exception(sprintf('Error while truncate the playlist: %s',$poll->getSpotifyPlaylistUri()));
             }
 
         } else {
@@ -233,31 +265,31 @@ class SpotifyController extends AbstractController
             throw new \Exception('Invalid poll id');
         }
 
-        if ($poll->restartPoll) {
+        if (empty($poll->getRestartDate())) {
             throw new \Exception('Poll not setted as restartable');
         }
-        if (empty($poll->spotifyWinnerPlaylistUri) || empty($poll->spotifyHistoricPlaylistUri)) {
+        if (empty($poll->getSpotifyWinnerPlaylistUri()) || empty($poll->getSpotifyHistoricPlaylistUri())) {
             throw new \Exception('Poll without winner & historical playlist');
         }
         $tracks = $poll->getTrackOrderByVoted();
-        if (!$client->addPlaylistTracks($poll->spotifyWinnerPlaylistUri, current($tracks)['spotify_uri']))
+        if (!$client->addPlaylistTracks($poll->getSpotifyWinnerPlaylistUri(), current($tracks)['spotify_uri']))
         {
             throw new \Exception(sprintf(
                 'Error adding the track winner %s into the playlist: %s',
-                current($tracks)['spotify_uri'], $poll->spotifyWinnerPlaylistUri
+                current($tracks)['spotify_uri'], $poll->getSpotifyWinnerPlaylistUri()
             ));
         }
-        if (!$client->addPlaylistTracks($poll->spotifyHistoricPlaylistUri, array_column($tracks, 'spotify_uri')))
+        if (!$client->addPlaylistTracks($poll->getSpotifyHistoricPlaylistUri(), array_column($tracks, 'spotify_uri')))
         {
             throw new \Exception(sprintf(
                 'Error adding %s historical tracks into the playlist: %s',
-                count($tracks), $poll->spotifyHistoricPlaylistUri
+                count($tracks), $poll->getSpotifyHistoricPlaylistUri()
             ));
         }
 
-        if (!$client->deletePlaylistTracks($poll->spotifyPlaylistUri))
+        if (!$client->deletePlaylistTracks($poll->getSpotifyPlaylistUri()))
         {
-            throw new \Exception(sprintf('Error while truncate the playlist: %s',$poll->spotifyPlaylistUri));
+            throw new \Exception(sprintf('Error while truncate the playlist: %s',$poll->getSpotifyPlaylistUri()));
         }
 
         return $this->json($poll->toArray());

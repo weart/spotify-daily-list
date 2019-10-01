@@ -38,6 +38,3 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 * Organizations
 * Edit poll: Autofinish
 * Poll image from first song
-
-
-

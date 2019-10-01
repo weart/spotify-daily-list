@@ -4,7 +4,7 @@ namespace App\EventSubscriber;
 
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\Poll;
-use App\Entity\User;
+//use App\Entity\User;
 use App\Events\SpotifyLogged;
 use App\Service\SpotifyService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +31,7 @@ final class SpotifySubscriber implements EventSubscriberInterface
     {
         return [
             SpotifyLogged::NAME => ['logCredentials', EventPriorities::PRE_RESPOND],
-            KernelEvents::VIEW => ['testWrite', EventPriorities::POST_WRITE]
+            KernelEvents::VIEW => ['pollCreateSpotifyPlaylist', EventPriorities::POST_WRITE]
         ];
     }
 
@@ -42,7 +42,7 @@ final class SpotifySubscriber implements EventSubscriberInterface
         ]);
     }
 
-    public function testWrite(ViewEvent $event)
+    public function pollCreateSpotifyPlaylist(ViewEvent $event)
     {
         $poll = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
@@ -51,32 +51,37 @@ final class SpotifySubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (!empty($poll->spotifyPlaylistUri)) {
+        if (!empty($poll->getSpotifyPlaylistUri())) {
             return;
         }
 
-        $this->logger->info('testWrite', [
+        $this->logger->info('pollCreateSpotifyPlaylist', [
             'event' => $event,
             'res' => get_class($poll)
         ]);
 
-        $playlist = $this->getClient()->createPlaylist(['name' => $poll->name, 'public' => true]);
+
+        $playlist = $this->getClient()->createPlaylist([
+            'name' => $poll->getName(),
+            'public' => $poll->isPublicVisibility()
+        ]);
         if (!$playlist)
         {
-            throw new \Exception(sprintf('Error creating the playlist: %s',$poll->name));
+            throw new \Exception(sprintf('Error creating the playlist: %s',$poll->getName()));
         }
         $this->logger->info('playlist', [
             'item' => $playlist,
         ]);
 
-        $poll->spotifyPlaylistUri = $playlist['id'];
+        $poll->setSpotifyPlaylistUri($playlist['id']);
         $this->em->persist($poll);
         $this->em->flush();
     }
 
     private function getClient()
     {
-        list($accessToken, $refreshToken) = $this->em->getRepository(User::class)->getSpotifyCredentials();
-        return $this->spotify->getClient($accessToken);
+//        list($accessToken, $refreshToken) = $this->em->getRepository(User::class)->getSpotifyCredentials();
+//        return $this->spotify->getClient($accessToken);
+        return $this->spotify->getClient();
     }
 }
