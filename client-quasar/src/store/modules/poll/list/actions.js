@@ -1,21 +1,18 @@
-import fetch from '../../../../utils/fetch';
-import * as types from './mutation_types';
+import { types } from './mutation_types';
+import { getItemsCommon, getSelectItemsCommon } from '../../../../common/store/list/actions';
 
-const getItems = ({ commit }, { page = 'polls', params = {} }) => {
-  commit(types.TOGGLE_LOADING);
+const hydraPrefix = 'hydra:';
 
-  fetch(page, { params })
-    .then(response => response.json())
-    .then((data) => {
-      commit(types.TOGGLE_LOADING);
-      commit(types.SET_ITEMS, data['hydra:member']);
-      commit(types.SET_VIEW, data['hydra:view']);
-      commit(types.SET_TOTALITEMS, data['hydra:totalItems']);
-    })
-    .catch((e) => {
-      commit(types.TOGGLE_LOADING);
-      commit(types.SET_ERROR, e.message);
-    });
-};
+export const getItems = (state, options) =>
+  getItemsCommon(
+    state,
+    { ...{ page: 'polls', params: {} }, ...options },
+    { types, hydraPrefix },
+  );
 
-export default getItems;
+export const getSelectItems = (state, options) =>
+  getSelectItemsCommon(
+    state,
+    { ...{ page: 'polls', params: { properties: ['id', 'name'] } }, ...options },
+    { types, hydraPrefix },
+  );

@@ -1,11 +1,20 @@
 <template>
-  <q-card class="my-card" @click="goToPoll">
+  <q-card
+    class="my-card"
+    @click="goToPoll"
+  >
     <q-img :src="imgSrc">
       <div class="absolute-bottom">
-        <div class="text-h6">{{ poll.name }}</div>
+        <div class="text-h6">
+          {{ poll.name }}
+        </div>
         <!--<div class="text-subtitle2">Org: {{ poll.organization.name }}</div>-->
-        <div class="text-subtitle2">Num Tracks: {{ poll.tracks.length }}</div>
-        <div class="text-subtitle2">Num Votes: {{ poll.votes.length }}</div>
+        <div class="text-subtitle2">
+          Num Tracks: {{ poll.tracks.length }}
+        </div>
+        <div class="text-subtitle2">
+          Num Votes: {{ poll.votes.length }}
+        </div>
       </div>
     </q-img>
   </q-card>
@@ -21,7 +30,12 @@
 <script>
 export default {
   name: 'PollCard',
-  props: ['poll'],
+  props: {
+    poll: {
+      type: Object,
+      default: null
+    },
+  },
   methods: {
     goToPoll() {
       this.$router.push({ name: 'Poll', params: { id: this.poll.id } });

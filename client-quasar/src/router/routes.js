@@ -11,12 +11,12 @@ const routes = [
       {
         name: 'Polls',
         path: '/polls/',
-        component: () => import('pages/PollsVuex.vue'),
+        component: () => import('pages/Polls.vue'),
       },
       {
         name: 'Poll',
         path: '/poll/:id',
-        component: () => import('pages/PollVuex.vue'),
+        component: () => import('pages/Poll.vue'),
         meta: {
           breadcrumb: [
             { label: 'Polls', icon: 'gavel' },

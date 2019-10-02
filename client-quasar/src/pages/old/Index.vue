@@ -1,6 +1,6 @@
 <template>
   <q-page>
-<!--  <q-page class="flex flex-center"><img alt="Quasar logo" src="~assets/quasar-logo-full.svg">-->
+    <!--  <q-page class="flex flex-center"><img alt="Quasar logo" src="~assets/quasar-logo-full.svg">-->
     <div class="row q-pa-lg q-gutter-none justify-around full-width text-center">
       <h4 class="q-ma-sm col-12 text-weight-bold">
         Share & Rate Songs
@@ -13,13 +13,15 @@
 
     <div class="row q-pa-lg q-gutter-none justify-around full-width text-center">
       <q-btn
-        push color="secondary" label="Create new organization" :ripple="{ center: true }"
+        push
+        color="secondary"
+        label="Create new organization"
+        :ripple="{ center: true }"
         to="/organization/create"
       />
     </div>
 
     <cards />
-
   </q-page>
 </template>
 

@@ -1,6 +1,5 @@
 <template>
   <q-form class="q-gutter-md">
-
     <q-input
       v-model="item.name"
       filled
@@ -9,7 +8,6 @@
       lazy-rules
       :rules="[isInvalid('name')]"
     />
-
   </q-form>
 </template>
 

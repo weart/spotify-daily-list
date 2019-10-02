@@ -1,34 +1,9 @@
-import SubmissionError from '../../../../error/SubmissionError';
-import fetch from '../../../../utils/fetch';
-import * as types from './mutation_types';
+import { types } from './mutation_types';
+import { createCommon, resetCommon } from '../../../../common/store/create/actions';
 
-export const create = ({ commit }, values) => {
-  commit(types.VOTE_CREATE_SET_ERROR, '');
-  commit(types.VOTE_CREATE_TOGGLE_LOADING);
+export const create = (state, values) =>
+  createCommon(state, { page: 'votes', values }, { types });
 
-  return fetch('votes', { method: 'POST', body: JSON.stringify(values) })
-    .then((response) => {
-      commit(types.VOTE_CREATE_TOGGLE_LOADING);
-
-      return response.json();
-    })
-    .then((data) => {
-      commit(types.VOTE_CREATE_SET_CREATED, data);
-    })
-    .catch((e) => {
-      commit(types.VOTE_CREATE_TOGGLE_LOADING);
-
-      if (e instanceof SubmissionError) {
-        commit(types.VOTE_CREATE_SET_VIOLATIONS, e.errors);
-        // eslint-disable-next-line
-        commit(types.VOTE_CREATE_SET_ERROR, e.errors._error);
-        return;
-      }
-
-      commit(types.VOTE_CREATE_SET_ERROR, e.message);
-    });
-};
-
-export const reset = ({ commit }) => {
-  commit(types.VOTE_CREATE_RESET);
+export const reset = state => {
+  resetCommon(state, { types });
 };

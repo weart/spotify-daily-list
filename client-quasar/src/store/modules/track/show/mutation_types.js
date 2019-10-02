@@ -1,4 +1,3 @@
-export const TRACK_SHOW_RESET = 'TRACK_SHOW_RESET';
-export const TRACK_SHOW_SET_ERROR = 'TRACK_SHOW_SET_ERROR';
-export const TRACK_SHOW_SET_RETRIEVED = 'TRACK_SHOW_SET_RETRIEVED';
-export const TRACK_SHOW_TOGGLE_LOADING = 'TRACK_SHOW_TOGGLE_LOADING';
+import { makeTypes } from '../../../../common/store/show/mutation_types';
+const { TRACK: types } = makeTypes('TRACK');
+export { types };

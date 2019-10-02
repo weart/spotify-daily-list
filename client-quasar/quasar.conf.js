@@ -6,7 +6,8 @@ module.exports = function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     boot: [
-      'i18n'
+      'i18n',
+      'addressbar-color'
     ],
 
     css: [
@@ -50,7 +51,6 @@ module.exports = function (ctx) {
         'QTh',
         'QTr',
         'QTd',
-        'QAjaxBar',
         'QBreadcrumbs',
         'QBreadcrumbsEl',
         'QSpace',
@@ -62,6 +62,17 @@ module.exports = function (ctx) {
         'QTime',
         'QCheckbox',
         'QPopupProxy',
+        //Old generator version
+        'QAjaxBar',
+        //New generator version
+        // 'QSpinner',
+        // 'QInnerLoading',
+        // 'QCard',
+        // 'QCardSection',
+        // 'QCardActions',
+        // 'QExpansionItem',
+        // 'QDialog',
+        // 'QAvatar',
 
         'QTabs',
         'QTab',
@@ -97,7 +108,8 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'Notify'
+        'AddressbarColor',
+        'Notify',
       ],
 
       config: {
@@ -126,6 +138,8 @@ module.exports = function (ctx) {
           exclude: /node_modules/,
           options: {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
+            // Automatic fix?
+            // fix: true
           }
         })
       }

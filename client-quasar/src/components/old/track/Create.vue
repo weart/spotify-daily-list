@@ -1,9 +1,18 @@
 <template>
   <div>
-    <q-ajax-bar ref="bar" position="top" color="accent" size="10px" skip-hijack />
+    <q-ajax-bar
+      ref="bar"
+      position="top"
+      color="accent"
+      size="10px"
+      skip-hijack
+    />
     <q-toolbar class="q-my-md">
       <q-breadcrumbs class="q-mr-sm">
-        <q-breadcrumbs-el icon="home" to="/" />
+        <q-breadcrumbs-el
+          icon="home"
+          to="/"
+        />
         <q-breadcrumbs-el
           v-for="(breadcrumb, idx) in breadcrumbList"
           :key="idx"
@@ -14,12 +23,26 @@
       </q-breadcrumbs>
       <q-space />
       <div>
-        <q-btn :label="$t('Submit')" color="primary" @click="onSendForm" />
-        <q-btn :label="$t('Reset')" color="primary" flat class="q-ml-sm" @click="resetForm" />
+        <q-btn
+          :label="$t('Submit')"
+          color="primary"
+          @click="onSendForm"
+        />
+        <q-btn
+          :label="$t('Reset')"
+          color="primary"
+          flat
+          class="q-ml-sm"
+          @click="resetForm"
+        />
       </div>
     </q-toolbar>
 
-    <TrackForm ref="createForm" :values="item" :errors="violations" />
+    <TrackForm
+      ref="createForm"
+      :values="item"
+      :errors="violations"
+    />
   </div>
 </template>
 

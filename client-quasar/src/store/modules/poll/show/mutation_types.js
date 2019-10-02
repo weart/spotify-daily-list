@@ -1,4 +1,3 @@
-export const POLL_SHOW_RESET = 'POLL_SHOW_RESET';
-export const POLL_SHOW_SET_ERROR = 'POLL_SHOW_SET_ERROR';
-export const POLL_SHOW_SET_RETRIEVED = 'POLL_SHOW_SET_RETRIEVED';
-export const POLL_SHOW_TOGGLE_LOADING = 'POLL_SHOW_TOGGLE_LOADING';
+import { makeTypes } from '../../../../common/store/show/mutation_types';
+const { POLL: types } = makeTypes('POLL');
+export { types };

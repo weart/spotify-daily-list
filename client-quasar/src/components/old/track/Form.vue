@@ -1,6 +1,5 @@
 <template>
   <q-form class="q-gutter-md">
-
     <q-input
       v-model="item.spotify_uri"
       filled

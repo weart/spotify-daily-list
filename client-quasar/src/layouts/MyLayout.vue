@@ -2,14 +2,32 @@
   <q-layout view="hHh lpR fFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn color="primary" icon="gavel" label="Polls" to="/polls" />
-        <q-btn icon="supervisor_account" label="Groups" to="/orgs" />
+        <q-btn
+          color="primary"
+          icon="gavel"
+          label="Polls"
+          to="/polls"
+        />
+        <q-btn
+          icon="supervisor_account"
+          label="Groups"
+          to="/orgs"
+        />
         <q-space />
-        <q-toolbar-title class="text-center" to="/">
+        <q-toolbar-title
+          class="text-center"
+          to="/"
+        >
           Discoveryfy: {{ this.$route.name }}
         </q-toolbar-title>
         <q-space />
-        <q-btn push icon="account_box" type="a" :href="spotify_login" target="_blank">
+        <q-btn
+          push
+          icon="account_box"
+          type="a"
+          :href="spotify_login"
+          target="_blank"
+        >
           {{ $t('Login') }}
         </q-btn>
       </q-toolbar>
@@ -22,13 +40,11 @@
         <q-route-tab to="/polls?active=0" label="Past polls" icon="watch_later" />
       </q-tabs>
       -->
-
     </q-header>
 
     <q-page-container>
       <router-view />
     </q-page-container>
-
   </q-layout>
 </template>
 

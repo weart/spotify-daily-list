@@ -2,9 +2,9 @@
   <div class="row q-pa-md q-gutter-md justify-around items-start">
     <card
       v-for="organization in organizations"
-      v-bind:key="organization.id"
-      v-bind:organization="organization"
-    ></card>
+      :key="organization.id"
+      :organization="organization"
+    />
 
     <q-spinner-audio
       v-if="isLoading"

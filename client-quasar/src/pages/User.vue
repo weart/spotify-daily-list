@@ -6,12 +6,16 @@
         style="width:30vw;max-width:150px;"
       >
     </p>
-    <p class="text-faded">User</p>
+    <p class="text-faded">
+      User
+    </p>
     <q-btn
       color="secondary"
       style="width:200px;"
       @click="$router.push('/')"
-    >Go back</q-btn>
+    >
+      Go back
+    </q-btn>
   </div>
 </template>
 

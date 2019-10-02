@@ -1,9 +1,18 @@
 <template>
   <div>
-    <q-ajax-bar ref="bar" position="top" color="accent" size="10px" skip-hijack />
+    <q-ajax-bar
+      ref="bar"
+      position="top"
+      color="accent"
+      size="10px"
+      skip-hijack
+    />
     <q-toolbar class="q-my-md">
       <q-breadcrumbs class="q-mr-sm">
-        <q-breadcrumbs-el icon="home" to="/" />
+        <q-breadcrumbs-el
+          icon="home"
+          to="/"
+        />
         <q-breadcrumbs-el
           v-for="(breadcrumb, idx) in breadcrumbList"
           :key="idx"
@@ -11,15 +20,27 @@
           :icon="breadcrumb.icon"
           :to="breadcrumb.to"
         />
-        <q-breadcrumbs-el v-if="item && item['@id']" :label="item['@id']" />
+        <q-breadcrumbs-el
+          v-if="item && item['@id']"
+          :label="item['@id']"
+        />
       </q-breadcrumbs>
       <q-space />
       <div>
-        <q-btn :label="$t('Delete')" color="primary" flat class="q-ml-sm" @click="deleteItem" />
+        <q-btn
+          :label="$t('Delete')"
+          color="primary"
+          flat
+          class="q-ml-sm"
+          @click="deleteItem"
+        />
       </div>
     </q-toolbar>
 
-    <div v-if="item" class="table-responsive">
+    <div
+      v-if="item"
+      class="table-responsive"
+    >
       <q-markup-table>
         <thead>
           <tr>

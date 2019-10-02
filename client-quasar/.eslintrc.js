@@ -13,24 +13,30 @@ module.exports = {
   // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
   // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
   extends: [
-    'plugin:vue/essential',
-    'airbnb-base'
+    // 'plugin:vue/essential',
+    'plugin:vue/strongly-recommended',
+    // 'airbnb-base'
+    // From https://github.com/api-platform/client-generator/blob/v0.3.1/.babelrc
+    // 'plugin:prettier/recommended',
+    // 'eslint:recommended',
   ],
 
   // required to lint *.vue files
   plugins: [
-    'vue'
+    'import',
+    'vue',
   ],
 
   globals: {
-    'ga': true, // Google Analytics
-    'cordova': true,
+    'ga': false, // Google Analytics
+    'cordova': false,
     '__statics': true,
     'process': true
   },
 
   // add your custom rules here
   rules: {
+    /*
     'no-param-reassign': 'off',
 
     'import/first': 'off',
@@ -43,6 +49,7 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
     'prefer-promise-reject-errors': 'off',
+    */
 
     // allow console.log during development only
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',

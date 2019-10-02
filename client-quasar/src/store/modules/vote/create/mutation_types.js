@@ -1,5 +1,3 @@
-export const VOTE_CREATE_RESET = 'VOTE_CREATE_RESET';
-export const VOTE_CREATE_SET_CREATED = 'VOTE_CREATE_SET_CREATED';
-export const VOTE_CREATE_SET_ERROR = 'VOTE_CREATE_SET_ERROR';
-export const VOTE_CREATE_SET_VIOLATIONS = 'VOTE_CREATE_SET_VIOLATIONS';
-export const VOTE_CREATE_TOGGLE_LOADING = 'VOTE_CREATE_TOGGLE_LOADING';
+import { makeTypes } from '../../../../common/store/create/mutation_types';
+const { VOTE: types } = makeTypes('VOTE');
+export { types };

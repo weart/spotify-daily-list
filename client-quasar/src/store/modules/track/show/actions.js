@@ -1,21 +1,8 @@
-import fetch from '../../../../utils/fetch';
-import * as types from './mutation_types';
+import { types } from './mutation_types';
+import { retrieveCommon, resetCommon } from '../../../../common/store/show/actions';
 
-export const retrieve = ({ commit }, id) => {
-  commit(types.TRACK_SHOW_TOGGLE_LOADING);
+export const retrieve = (state, id) => retrieveCommon(state, id, { types });
 
-  return fetch(id)
-    .then(response => response.json())
-    .then((data) => {
-      commit(types.TRACK_SHOW_TOGGLE_LOADING);
-      commit(types.TRACK_SHOW_SET_RETRIEVED, data);
-    })
-    .catch((e) => {
-      commit(types.TRACK_SHOW_TOGGLE_LOADING);
-      commit(types.TRACK_SHOW_SET_ERROR, e.message);
-    });
-};
-
-export const reset = ({ commit }) => {
-  commit(types.TRACK_SHOW_RESET);
+export const reset = state => {
+  resetCommon(state, { types });
 };

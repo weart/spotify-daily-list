@@ -1,6 +1,3 @@
-export const RESET = 'TRACK_LIST_RESET';
-export const SET_ITEMS = 'TRACK_LIST_SET_ITEMS';
-export const SET_ERROR = 'TRACK_LIST_SET_ERROR';
-export const SET_VIEW = 'TRACK_LIST_SET_VIEW';
-export const TOGGLE_LOADING = 'TRACK_LIST_TOGGLE_LOADING';
-export const SET_TOTALITEMS = 'TRACK_LIST_SET_TOTALITEMS';
+import { makeTypes } from '../../../../common/store/list/mutation_types';
+const { TRACK: types } = makeTypes('TRACK');
+export { types };

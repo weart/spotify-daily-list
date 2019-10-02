@@ -1,28 +1,5 @@
-import * as types from './mutation_types';
+import { types } from './mutation_types';
+import initState from './state';
+import makeState from '../../../../common/store/create/mutations';
 
-export default {
-  [types.VOTE_CREATE_SET_ERROR](state, error) {
-    Object.assign(state, { error });
-  },
-
-  [types.VOTE_CREATE_TOGGLE_LOADING](state) {
-    Object.assign(state, { isLoading: !state.isLoading });
-  },
-
-  [types.VOTE_CREATE_SET_CREATED](state, created) {
-    Object.assign(state, { created });
-  },
-
-  [types.VOTE_CREATE_SET_VIOLATIONS](state, violations) {
-    Object.assign(state, { violations });
-  },
-
-  [types.VOTE_CREATE_RESET](state) {
-    Object.assign(state, {
-      created: null,
-      error: '',
-      isLoading: false,
-      violations: null,
-    });
-  },
-};
+export default makeState(initState, types, 'CREATE');

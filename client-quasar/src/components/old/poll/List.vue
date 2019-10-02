@@ -1,9 +1,18 @@
 <template>
   <div>
-    <q-ajax-bar ref="bar" position="top" color="accent" size="10px" skip-hijack />
+    <q-ajax-bar
+      ref="bar"
+      position="top"
+      color="accent"
+      size="10px"
+      skip-hijack
+    />
     <q-toolbar class="q-my-md">
       <q-breadcrumbs class="q-mr-sm">
-        <q-breadcrumbs-el icon="home" to="/" />
+        <q-breadcrumbs-el
+          icon="home"
+          to="/"
+        />
         <q-breadcrumbs-el
           v-for="(breadcrumb, idx) in breadcrumbList"
           :key="idx"
@@ -13,7 +22,15 @@
         />
       </q-breadcrumbs>
       <q-space />
-      <div><q-btn flat round dense icon="add" :to="{ name: 'PollCreate' }" /></div>
+      <div>
+        <q-btn
+          flat
+          round
+          dense
+          icon="add"
+          :to="{ name: 'PollCreate' }"
+        />
+      </div>
     </q-toolbar>
 
     <q-table
@@ -24,7 +41,11 @@
       row-key="id"
       flat
     >
-      <q-td slot="body-cell-action" slot-scope="props" :props="props">
+      <q-td
+        slot="body-cell-action"
+        slot-scope="props"
+        :props="props"
+      >
         <q-btn
           flat
           round

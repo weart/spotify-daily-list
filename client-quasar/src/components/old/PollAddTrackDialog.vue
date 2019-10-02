@@ -1,89 +1,117 @@
 <template>
-<q-dialog
-  v-model="openDialog"
-  full-width
-  transition-show="slide-up"
-  transition-hide="slide-down"
->
-  <q-card>
-
-    <q-bar class="bg-primary text-white">
-      <div>{{ $t('Suggest new song in ') }}{{ poll.name }}</div>
-      <q-space />
-      <q-btn dense flat icon="minimize"
-             @click="maximizedToggle = false" v-if="maximizedToggle">
-        <q-tooltip v-if="maximizedToggle"
-                   content-class="bg-white text-primary">Minimize</q-tooltip>
-      </q-btn>
-      <q-btn dense flat icon="crop_square"
-             @click="maximizedToggle = true" v-if="!maximizedToggle">
-        <q-tooltip v-if="!maximizedToggle"
-                   content-class="bg-white text-primary">Maximize</q-tooltip>
-      </q-btn>
-      <q-btn dense flat icon="close" v-close-popup>
-        <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
-      </q-btn>
-    </q-bar>
-
-    <q-form class="q-gutter-md">
-      <q-card-section class="scroll">
-
-        <q-input
-          v-model="trackForm.spotify_uri"
-          filled
-          type="text"
-          :label="$t('spotify_uri')"
-          lazy-rules
-          :rules="[isInvalid('spotify_uri')]"
-        />
-
-        <q-input
-          v-model="trackForm.youtube_uri"
-          filled
-          type="text"
-          :label="$t('youtube_uri')"
-          lazy-rules
-          :rules="[isInvalid('youtube_uri')]"
-        />
-
-        <q-input
-          v-model="trackForm.artist"
-          filled
-          type="text"
-          :label="$t('artist')"
-          lazy-rules
-          :rules="[val => !!val || $t('Field is required'), isInvalid('artist')]"
-        />
-
-        <q-input
-          v-model="trackForm.name"
-          filled
-          type="text"
-          :label="$t('name')"
-          lazy-rules
-          :rules="[val => !!val || $t('Field is required'), isInvalid('name')]"
-        />
-
-        <q-separator />
-
-      </q-card-section>
-      <q-card-section class="row justify-around items-start">
-        <q-btn color="primary" @click="downloadSpotifyData" v-if="fetched">
-          {{ $t('Download Spotify data') }}
+  <q-dialog
+    v-model="openDialog"
+    full-width
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
+    <q-card>
+      <q-bar class="bg-primary text-white">
+        <div>{{ $t('Suggest new song in ') }}{{ poll.name }}</div>
+        <q-space />
+        <q-btn
+          dense
+          flat
+          icon="minimize"
+          @click="maximizedToggle = false"
+          v-if="maximizedToggle"
+        >
+          <q-tooltip
+            v-if="maximizedToggle"
+            content-class="bg-white text-primary"
+          >
+            Minimize
+          </q-tooltip>
         </q-btn>
-        <q-spinner-audio
-          v-if="!fetched"
-          color="primary"
-          size="2em"
-        />
-        <q-btn color="primary" @click="onSendForm">
-          {{ $t('Submit') }}
+        <q-btn
+          dense
+          flat
+          icon="crop_square"
+          @click="maximizedToggle = true"
+          v-if="!maximizedToggle"
+        >
+          <q-tooltip
+            v-if="!maximizedToggle"
+            content-class="bg-white text-primary"
+          >
+            Maximize
+          </q-tooltip>
         </q-btn>
-      </q-card-section>
-    </q-form>
+        <q-btn
+          dense
+          flat
+          icon="close"
+          v-close-popup
+        >
+          <q-tooltip content-class="bg-white text-primary">
+            Close
+          </q-tooltip>
+        </q-btn>
+      </q-bar>
 
-  </q-card>
-</q-dialog>
+      <q-form class="q-gutter-md">
+        <q-card-section class="scroll">
+          <q-input
+            v-model="trackForm.spotify_uri"
+            filled
+            type="text"
+            :label="$t('spotify_uri')"
+            lazy-rules
+            :rules="[isInvalid('spotify_uri')]"
+          />
+
+          <q-input
+            v-model="trackForm.youtube_uri"
+            filled
+            type="text"
+            :label="$t('youtube_uri')"
+            lazy-rules
+            :rules="[isInvalid('youtube_uri')]"
+          />
+
+          <q-input
+            v-model="trackForm.artist"
+            filled
+            type="text"
+            :label="$t('artist')"
+            lazy-rules
+            :rules="[val => !!val || $t('Field is required'), isInvalid('artist')]"
+          />
+
+          <q-input
+            v-model="trackForm.name"
+            filled
+            type="text"
+            :label="$t('name')"
+            lazy-rules
+            :rules="[val => !!val || $t('Field is required'), isInvalid('name')]"
+          />
+
+          <q-separator />
+        </q-card-section>
+        <q-card-section class="row justify-around items-start">
+          <q-btn
+            color="primary"
+            @click="downloadSpotifyData"
+            v-if="fetched"
+          >
+            {{ $t('Download Spotify data') }}
+          </q-btn>
+          <q-spinner-audio
+            v-if="!fetched"
+            color="primary"
+            size="2em"
+          />
+          <q-btn
+            color="primary"
+            @click="onSendForm"
+          >
+            {{ $t('Submit') }}
+          </q-btn>
+        </q-card-section>
+      </q-form>
+    </q-card>
+  </q-dialog>
 </template>
 
 <style>

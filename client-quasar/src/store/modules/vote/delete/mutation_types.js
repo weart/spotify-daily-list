@@ -1,4 +1,3 @@
-export const VOTE_DELETE_RESET = 'VOTE_DELETE_RESET';
-export const VOTE_DELETE_SET_ERROR = 'VOTE_DELETE_SET_ERROR';
-export const VOTE_DELETE_SET_DELETED = 'VOTE_DELETE_SET_DELETED';
-export const VOTE_DELETE_TOGGLE_LOADING = 'VOTE_DELETE_TOGGLE_LOADING';
+import { makeTypes } from '../../../../common/store/delete/mutation_types';
+const { TYPEPROCESSING: types } = makeTypes('TYPEPROCESSING');
+export { types };

@@ -1,151 +1,448 @@
 <template>
-<div>
-  <q-toolbar class="q-my-md">
-    <q-breadcrumbs class="q-mr-sm">
-      <q-breadcrumbs-el
-        v-for="(breadcrumb, idx) in breadcrumbList"
-        :key="idx"
-        :label="breadcrumb.label"
-        :icon="breadcrumb.icon"
-        :to="breadcrumb.to"
+  <q-page>
+    <!--<q-ajax-bar ref="bar" position="top" color="accent" size="10px" skip-hijack />-->
+
+    <q-toolbar class="q-my-md">
+      <q-breadcrumbs class="q-mr-sm">
+        <q-breadcrumbs-el
+          v-for="(breadcrumb, idx) in $route.meta.breadcrumb"
+          :key="idx"
+          :label="breadcrumb.label"
+          :icon="breadcrumb.icon"
+          :to="breadcrumb.to"
+        />
+        <q-breadcrumbs-el
+          v-if="item"
+          :label="item.name"
+        />
+      </q-breadcrumbs>
+      <q-space />
+      <div>
+        <q-btn
+          flat
+          round
+          dense
+          icon="add"
+          @click="pollCreate"
+        />
+      </div>
+    </q-toolbar>
+
+    <div
+      class="row q-pa-md q-gutter-md justify-around items-start"
+      v-if="isLoading"
+    >
+      <q-spinner-audio
+        v-if="isLoading"
+        color="primary"
+        size="2em"
       />
-      <q-breadcrumbs-el label="Poll #name" />
-    </q-breadcrumbs>
-    <q-space />
-    <div><q-btn flat round dense icon="add" @click="pollCreate" /></div>
-  </q-toolbar>
+    </div>
 
-  <q-spinner-audio
-    v-if="isLoading"
-    color="primary"
-    size="2em"
-  />
+    <template v-if="!isLoading && item">
+      <q-card
+        flat
+        bordered
+        class="center-card"
+      >
+        <q-toolbar>
+          <q-card-section class="card-title">
+            <div>Tracks</div>
+          </q-card-section>
+          <q-space />
+          <q-btn
+            flat
+            round
+            icon="library_music"
+          >
+            <q-tooltip>Go to Spotify playlist</q-tooltip>
+          </q-btn>
+          <q-btn
+            flat
+            rounded
+            icon="add"
+            label="Suggest new song"
+          >
+          <!--<q-tooltip>Suggest new song</q-tooltip>-->
+          </q-btn>
+          <q-btn
+            flat
+            rounded
+            icon="how_to_vote"
+            label="Vote!"
+            :loading="voteLoading"
+            @click="voteCreate"
+          >
+            <template v-slot:loading>
+              <q-spinner-gears />
+            </template>
+          </q-btn>
+        </q-toolbar>
 
-  <q-card flat bordered class="center-card">
+        <q-separator />
 
-    <q-toolbar>
-      <q-card-section class="card-title">
-        <div>Tracks</div>
-      </q-card-section>
-      <q-space />
-      <q-btn flat round dense icon="library_music">
-        <q-tooltip>Go to Spotify playlist</q-tooltip>
-      </q-btn>
-      <q-btn flat round dense icon="add">
-        <q-tooltip>Suggest new song</q-tooltip>
-      </q-btn>
-      <q-btn flat round dense icon="how_to_vote"
-             :loading="voteLoading" @click="voteCreate">
-        <q-tooltip>Vote!</q-tooltip>
-        <template v-slot:loading>
-          <q-spinner-gears />
-        </template>
-      </q-btn>
-    </q-toolbar>
+        <q-card-section
+          style="max-height: 50vh"
+          class="scroll"
+        >
+          <template v-if="!item || !item.tracks || item.tracks.length == 0">
+            <h5>Without songs</h5>
+          </template>
+          <template v-if="item && item.tracks.length > 0">
+            <tracks-list :poll="item" />
+          </template>
+        </q-card-section>
+      </q-card>
 
-    <q-separator></q-separator>
+      <br><br>
 
-    <q-card-section style="max-height: 50vh" class="scroll">
-      <tracks-list v-bind:poll="poll"></tracks-list>
-    </q-card-section>
+      <q-card
+        flat
+        bordered
+        class="center-card"
+      >
+        <q-toolbar>
+          <q-card-section class="card-title">
+            <div>Properties</div>
+          </q-card-section>
+          <q-space />
+          <q-btn
+            flat
+            rounded
+            icon="delete_forever"
+            color="warning"
+            label="Delete poll"
+          >
+            <q-tooltip>Delete poll</q-tooltip>
+          </q-btn>
+          <q-btn
+            flat
+            rounded
+            icon="save"
+            label="Save changes"
+          >
+            <q-tooltip>Save changes</q-tooltip>
+          </q-btn>
+        </q-toolbar>
 
-  </q-card>
+        <q-separator />
 
-  <br /><br />
+        <q-card-section
+          style="max-height: 50vh"
+          class="scroll"
+        >
+          <q-form>
+            <q-tabs
+              v-model="tab"
+              dense
+              class="text-grey"
+              active-color="primary"
+              indicator-color="primary"
+              align="justify"
+              narrow-indicator
+            >
+              <q-tab
+                name="basic"
+                label="Basic"
+              />
+              <q-tab
+                name="spotify"
+                label="Spotify"
+              />
+              <q-tab
+                name="advanced"
+                label="Advanced"
+              />
+            </q-tabs>
 
-  <q-card flat bordered class="center-card">
+            <q-separator />
 
-    <q-toolbar>
-      <q-card-section class="card-title">
-        <div>Properties</div>
-      </q-card-section>
-      <q-space />
-      <q-btn flat round dense icon="delete_forever">
-        <q-tooltip>Delete poll</q-tooltip>
-      </q-btn>
-      <q-btn flat round dense icon="save">
-        <q-tooltip>Save changes</q-tooltip>
-      </q-btn>
+            <q-tab-panels
+              v-model="tab"
+              animated
+            >
+              <q-tab-panel name="basic">
+                <q-toggle
+                  label="Readonly"
+                  v-model="readonly"
+                  color="primary"
+                  keep-color
+                />
+                <q-toggle
+                  label="Disable"
+                  v-model="disable"
+                  color="primary"
+                  keep-color
+                />
+                <q-input
+                  label="id"
+                  v-model="item.id"
+                  :readonly="readonly"
+                  :disable="disable"
+                />
+                <q-input
+                  label="Organization"
+                  v-model="item.organization.name"
+                  :readonly="readonly"
+                  :disable="disable"
+                />
+                <q-input
+                  label="name"
+                  v-model="item.name"
+                  :readonly="readonly"
+                  :disable="disable"
+                />
 
-    </q-toolbar>
+                <!-- timming -->
+                <q-input
+                  label="startDate"
+                  v-model="item.startDate"
+                  :readonly="readonly"
+                  :disable="disable"
+                >
+                  <template v-slot:prepend>
+                    <q-icon
+                      name="event"
+                      class="cursor-pointer"
+                    >
+                      <q-popup-proxy
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date
+                          v-model="item.startDate"
+                          mask="YYYY-MM-DDTHH:mm:ssZ"
+                          minimal
+                        />
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
 
-    <q-separator></q-separator>
+                  <template v-slot:append>
+                    <q-icon
+                      name="access_time"
+                      class="cursor-pointer"
+                    >
+                      <q-popup-proxy
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-time
+                          v-model="item.startDate"
+                          mask="YYYY-MM-DDTHH:mm:ssZ"
+                          format24h
+                        />
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+                <q-input
+                  label="endDate"
+                  v-model="item.endDate"
+                  :readonly="readonly"
+                  :disable="disable"
+                >
+                  <template v-slot:prepend>
+                    <q-icon
+                      name="event"
+                      class="cursor-pointer"
+                    >
+                      <q-popup-proxy
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date
+                          v-model="item.endDate"
+                          mask="YYYY-MM-DDTHH:mm:ssZ"
+                          minimal
+                        />
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
 
-    <q-card-section style="max-height: 50vh" class="scroll">
-      <q-form>
-        <!-- Basic -->
-        <q-toggle label="Readonly"
-          v-model="readonly" dark />
-        <q-toggle label="Disable"
-          v-model="disable" dark />
-        <q-input label="id"
-          v-model="poll.id" :readonly="readonly" :disable="disable" />
-        <q-input label="name"
-          v-model="poll.name" :readonly="readonly" :disable="disable" />
-        <q-input label="Organization"
-          v-model="poll.organization.name" :readonly="readonly" :disable="disable" />
+                  <template v-slot:append>
+                    <q-icon
+                      name="access_time"
+                      class="cursor-pointer"
+                    >
+                      <q-popup-proxy
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-time
+                          v-model="item.endDate"
+                          mask="YYYY-MM-DDTHH:mm:ssZ"
+                          format24h
+                        />
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
 
-        <!-- Timing -->
-        <q-input label="startDate"
-          v-model="poll.startDate" :readonly="readonly" :disable="disable" />
-        <q-input label="endDate"
-          v-model="poll.endDate" :readonly="readonly" :disable="disable" />
-        <q-input label="restartDate"
-          v-model="poll.restartDate" :readonly="readonly" :disable="disable" />
+                <q-input
+                  label="restartDate"
+                  v-model="item.restartDate"
+                  :readonly="readonly"
+                  :disable="disable"
+                />
+              </q-tab-panel>
 
-        <!-- Spotify -->
-        <q-input label="spotifyPlaylistImages"
-          v-model="poll.spotifyPlaylistImages" :readonly="readonly" :disable="disable" />
-        <q-input label="spotifyPlaylistUri"
-          v-model="poll.spotifyPlaylistUri" :readonly="readonly" :disable="disable" />
-        <q-input label="spotifyWinnerPlaylistUri"
-          v-model="poll.spotifyWinnerPlaylistUri" :readonly="readonly" :disable="disable" />
-        <q-input label="spotifyHistoricPlaylistUri"
-          v-model="poll.spotifyHistoricPlaylistUri" :readonly="readonly" :disable="disable" />
+              <q-tab-panel name="spotify">
+                <!--
+              <q-input label="spotifyPlaylistImages"
+                v-model="item.spotifyPlaylistImages" :readonly="readonly" :disable="disable" />
+              -->
+                <q-input
+                  label="spotifyPlaylistUri"
+                  v-model="item.spotifyPlaylistUri"
+                  :readonly="readonly"
+                  :disable="disable"
+                />
+                <q-input
+                  label="spotifyWinnerPlaylistUri"
+                  v-model="item.spotifyWinnerPlaylistUri"
+                  :readonly="readonly"
+                  :disable="disable"
+                />
+                <q-input
+                  label="spotifyHistoricPlaylistUri"
+                  v-model="item.spotifyHistoricPlaylistUri"
+                  :readonly="readonly"
+                  :disable="disable"
+                />
+              </q-tab-panel>
 
-        <!-- Advanced -->
-        <q-toggle label="publicVisibility"
-          v-model="poll.publicVisibility" :readonly="readonly" :disable="disable" />
-        <q-toggle label="anonCanVote"
-          v-model="poll.anonCanVote" :readonly="readonly" :disable="disable" />
-        <q-toggle label="anonCanAddTrack"
-          v-model="poll.anonCanAddTrack" :readonly="readonly" :disable="disable" />
-        <q-toggle label="multipleUserTracks"
-          v-model="poll.multipleUserTracks" :readonly="readonly" :disable="disable" />
-        <q-toggle label="multipleAnonTracks"
-          v-model="poll.multipleAnonTracks" :readonly="readonly" :disable="disable" />
 
-        <q-badge color="secondary">
-          anonVotesMaxRating: {{ poll.anonVotesMaxRating }} (Between 1 and 100)
-        </q-badge>
-        <q-slider
-          v-model="poll.anonVotesMaxRating"
-          :min="0"
-          :max="100"
-          label
-          :label-value="poll.anonVotesMaxRating + 'px'"
-          label-always
-          color="primary"
-          :readonly="readonly" :disable="disable"
-        />
-        <q-badge color="secondary">
-          userVotesMaxRating: {{ poll.userVotesMaxRating }} (Between 1 and 100)
-        </q-badge>
-        <q-slider
-          v-model="poll.userVotesMaxRating"
-          :min="0"
-          :max="100"
-          label
-          :label-value="poll.userVotesMaxRating + 'px'"
-          label-always
-          color="primary"
-          :readonly="readonly" :disable="disable"
-        />
-      </q-form>
-    </q-card-section>
+              <q-tab-panel name="advanced">
+                <q-list>
+                  <q-item>
+                    <q-item-section>
+                      <q-btn-toggle
+                        v-model="item.publicVisibility"
+                        spread
+                        rounded
+                        no-caps
+                        :readonly="readonly"
+                        :disable="disable"
+                        :options="[
+                          {label: 'Visible to everyone', value: true},
+                          {label: 'Visible only to members of the group', value: false},
+                        ]"
+                      />
+                    </q-item-section>
+                  </q-item>
 
-  </q-card>
-</div>
+                  <q-item>
+                    <q-item-section>
+                      <q-btn-toggle
+                        v-model="item.anonCanVote"
+                        spread
+                        rounded
+                        no-caps
+                        :readonly="readonly"
+                        :disable="disable"
+                        :options="[
+                          {label: 'Anyone can vote', value: true},
+                          {label: 'Only members of the group can vote', value: false},
+                        ]"
+                      />
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item>
+                    <q-item-section>
+                      <q-btn-toggle
+                        v-model="item.anonCanAddTrack"
+                        spread
+                        rounded
+                        no-caps
+                        :readonly="readonly"
+                        :disable="disable"
+                        :options="[
+                          {label: 'Anyone can suggest new tracks', value: true},
+                          {label: 'Only members of the group can suggest new tracks', value: false},
+                        ]"
+                      />
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item>
+                    <q-item-section>
+                      <q-btn-toggle
+                        v-model="item.multipleUserTracks"
+                        spread
+                        rounded
+                        no-caps
+                        :readonly="readonly"
+                        :disable="disable"
+                        :options="[
+                          {label: 'Members of the group can suggest more than one track', value: true},
+                          {label: 'Members of the group can suggest only one track', value: false},
+                        ]"
+                      />
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item>
+                    <q-item-section>
+                      <q-btn-toggle
+                        v-model="item.multipleAnonTracks"
+                        spread
+                        rounded
+                        no-caps
+                        :readonly="readonly"
+                        :disable="disable"
+                        :options="[
+                          {label: 'Anyone can suggest more than one track', value: true},
+                          {label: 'Anyone can suggest only one track', value: false},
+                        ]"
+                      />
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item>
+                    <q-item-section avatar>
+                      <q-item-label>
+                        How many points can give anyone in one vote? (Between 0 and 100)
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-slider
+                        v-model="item.anonVotesMaxRating"
+                        :min="0"
+                        :max="100"
+                        label
+                        :readonly="readonly"
+                        :disable="disable"
+                      />
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item>
+                    <q-item-section avatar>
+                      <q-item-label>
+                        How many point can give members of the group in one vote? (Between 1 and 100)
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-slider
+                        v-model="item.userVotesMaxRating"
+                        :min="1"
+                        :max="100"
+                        label
+                        :readonly="readonly"
+                        :disable="disable"
+                      />
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-tab-panel>
+            </q-tab-panels>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </template>
+  </q-page>
 </template>
 
 <style>
@@ -153,44 +450,33 @@
 </style>
 
 <script>
-import fetchSimple from 'src/utils/fetch_simple';
+import { show } from 'src/utils/vuexer';
+import ShowMixin from 'src/common/mixins/ShowMixin';
+const servicePrefix = 'Poll';
+const { getters, actions } = show(servicePrefix);
 import tracksList from 'src/components/TracksList';
 
 export default {
   name: 'Poll',
-  props: [
-    // 'poll'
-  ],
+  servicePrefix,
+  mixins: [ShowMixin],
   components: {
     tracksList,
   },
   data() {
     return {
-      isLoading: true,
       voteLoading: false,
       voteValid: false,
-      canModify: false,
       readonly: false,
       disable: false,
-      poll: {
-        id: 1,
-        name: 'abc',
-        organization: {
-          name: 'cba',
-        },
-        tracks: {},
-      },
+      tab: 'basic',
     };
   },
-  created() {
-    this.breadcrumbList = this.$route.meta.breadcrumb;
-    fetchSimple(`polls/${decodeURIComponent(this.$route.params.id)}`).then((data) => {
-      console.log('poll', data);
-      this.poll = data;
-      this.isLoading = false;
-    });
+  computed: {
+    ...getters
   },
   methods: {
+    ...actions,
     pollCreate() {
       console.log('@todo pollCreate');
       // put /polls & go
@@ -222,6 +508,18 @@ export default {
         }
       }, 3000);
     },
+
   },
+
+  // watch: {
+  //   isLoading(val) {
+  //     if (val) {
+  //       this.$refs.bar.start();
+  //     } else {
+  //       this.$refs.bar.stop();
+  //     }
+  //   },
+  // },
 };
+
 </script>

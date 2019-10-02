@@ -2,13 +2,23 @@
   <q-layout view="hHh lpR fFf">
     <q-header elevated>
       <q-toolbar>
-
-        <q-toolbar-title class="text-center" to="/">
+        <q-toolbar-title
+          class="text-center"
+          to="/"
+        >
           Discoveryfy: {{ this.$route.name }}
         </q-toolbar-title>
-        <div><q-btn push icon="account_box" type="a" :href="spotify_login" target="_blank">
-          {{ $t('Login') }}
-        </q-btn></div>
+        <div>
+          <q-btn
+            push
+            icon="account_box"
+            type="a"
+            :href="spotify_login"
+            target="_blank"
+          >
+            {{ $t('Login') }}
+          </q-btn>
+        </div>
       </q-toolbar>
 
       <!--
@@ -19,13 +29,11 @@
         <q-route-tab to="/polls?active=0" label="Past polls" icon="watch_later" />
       </q-tabs>
       -->
-
     </q-header>
 
     <q-page-container>
       <router-view />
     </q-page-container>
-
   </q-layout>
 </template>
 

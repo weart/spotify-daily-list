@@ -1,9 +1,18 @@
 <template>
   <div>
-    <q-ajax-bar ref="bar" position="top" color="accent" size="10px" skip-hijack />
+    <q-ajax-bar
+      ref="bar"
+      position="top"
+      color="accent"
+      size="10px"
+      skip-hijack
+    />
     <q-toolbar class="q-my-md">
       <q-breadcrumbs class="q-mr-sm">
-        <q-breadcrumbs-el icon="home" to="/" />
+        <q-breadcrumbs-el
+          icon="home"
+          to="/"
+        />
         <q-breadcrumbs-el
           v-for="(breadcrumb, idx) in breadcrumbList"
           :key="idx"
@@ -11,17 +20,40 @@
           :icon="breadcrumb.icon"
           :to="breadcrumb.to"
         />
-        <q-breadcrumbs-el v-if="item && item['@id']" :label="item['@id']" />
+        <q-breadcrumbs-el
+          v-if="item && item['@id']"
+          :label="item['@id']"
+        />
       </q-breadcrumbs>
       <q-space />
       <div>
-        <q-btn :label="$t('Submit')" color="primary" @click="onSendForm" />
-        <q-btn :label="$t('Reset')" color="primary" flat class="q-ml-sm" @click="resetForm" />
-        <q-btn :label="$t('Delete')" color="primary" flat class="q-ml-sm" @click="del" />
+        <q-btn
+          :label="$t('Submit')"
+          color="primary"
+          @click="onSendForm"
+        />
+        <q-btn
+          :label="$t('Reset')"
+          color="primary"
+          flat
+          class="q-ml-sm"
+          @click="resetForm"
+        />
+        <q-btn
+          :label="$t('Delete')"
+          color="primary"
+          flat
+          class="q-ml-sm"
+          @click="del"
+        />
       </div>
     </q-toolbar>
 
-    <OrganizationForm v-if="item" :values="item" :errors="violations" />
+    <OrganizationForm
+      v-if="item"
+      :values="item"
+      :errors="violations"
+    />
   </div>
 </template>
 

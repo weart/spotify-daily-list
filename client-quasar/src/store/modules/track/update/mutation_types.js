@@ -1,6 +1,3 @@
-export const RESET = 'TRACK_UPDATE_RESET';
-export const SET_ERROR = 'TRACK_UPDATE_SET_ERROR';
-export const SET_RETRIEVED = 'TRACK_UPDATE_SET_RETRIEVED';
-export const SET_UPDATED = 'TRACK_UPDATE_SET_UPDATED';
-export const SET_VIOLATIONS = 'TRACK_UPDATE_SET_VIOLATIONS';
-export const TOGGLE_LOADING = 'TRACK_UPDATE_TOGGLE_LOADING';
+import { makeTypes } from '../../../../common/store/update/mutation_types';
+const { TRACK: types } = makeTypes('TRACK');
+export { types };

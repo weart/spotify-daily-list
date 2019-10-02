@@ -1,5 +1,3 @@
-export const POLL_CREATE_RESET = 'POLL_CREATE_RESET';
-export const POLL_CREATE_SET_CREATED = 'POLL_CREATE_SET_CREATED';
-export const POLL_CREATE_SET_ERROR = 'POLL_CREATE_SET_ERROR';
-export const POLL_CREATE_SET_VIOLATIONS = 'POLL_CREATE_SET_VIOLATIONS';
-export const POLL_CREATE_TOGGLE_LOADING = 'POLL_CREATE_TOGGLE_LOADING';
+import { makeTypes } from '../../../../common/store/create/mutation_types';
+const { POLL: types } = makeTypes('POLL');
+export { types };

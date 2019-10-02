@@ -1,30 +1,31 @@
 <template>
   <div class="row q-pa-md q-gutter-md justify-around items-start">
-
-    <h6 class="full-width text-center q-ma-xs">Current polls</h6>
+    <h6 class="full-width text-center q-ma-xs">
+      Current polls
+    </h6>
 
     <card
       v-for="poll in currentPolls"
-      v-bind:key="poll.id"
-      v-bind:poll="poll"
-    ></card>
+      :key="poll.id"
+      :poll="poll"
+    />
 
-    <h6 class="full-width text-center q-ma-xs">Past polls</h6>
+    <h6 class="full-width text-center q-ma-xs">
+      Past polls
+    </h6>
 
     <card
       v-for="poll in pastPolls"
-      v-bind:key="poll.id"
-      v-bind:poll="poll"
-    ></card>
+      :key="poll.id"
+      :poll="poll"
+    />
 
     <q-spinner-audio
       v-if="isLoading"
       color="primary"
       size="2em"
     />
-
   </div>
-
 </template>
 
 <script>

@@ -1,30 +1,44 @@
 <template v-if="poll && poll.tracks.length > 0">
-  <q-list bordered padding>
-
-    <q-item-label header class="text-center text-h6">
+  <q-list
+    bordered
+    padding
+  >
+    <q-item-label
+      header
+      class="text-center text-h6"
+    >
       {{ $t('You can give 10 points between all songs') }}
     </q-item-label>
 
     <!-- eslint-disable vue/valid-v-for -->
     <template v-for="track in poll.tracksRaw">
+      <q-separator spaced />
 
-      <q-item v-bind:key="track.id" v-bind:track="track">
+      <q-item
+        :key="track.id"
+        :track="track"
+      >
         <q-item-section>
           <q-item-label>{{ track.artist }}</q-item-label>
-          <q-item-label caption lines="2">{{ track.name }}</q-item-label>
+          <q-item-label
+            caption
+            lines="2"
+          >
+            {{ track.name }}
+          </q-item-label>
         </q-item-section>
 
-        <q-item-section side top>
+        <q-item-section
+          side
+          top
+        >
           <q-rating
             v-model="rating"
             size="3.5em"
             icon="music_note"
           />
         </q-item-section>
-
       </q-item>
-
-      <q-separator spaced />
     </template>
     <!--eslint-enable-->
     <!--
@@ -38,9 +52,12 @@
 <script>
 export default {
   name: 'TracksList',
-  props: [
-    'poll',
-  ],
+  props: {
+    poll: {
+      type: Object,
+      default: null
+    },
+  },
   data() {
     return {
       rating: 0,

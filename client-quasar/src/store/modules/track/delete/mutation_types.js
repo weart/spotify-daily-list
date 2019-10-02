@@ -1,4 +1,3 @@
-export const TRACK_DELETE_RESET = 'TRACK_DELETE_RESET';
-export const TRACK_DELETE_SET_ERROR = 'TRACK_DELETE_SET_ERROR';
-export const TRACK_DELETE_SET_DELETED = 'TRACK_DELETE_SET_DELETED';
-export const TRACK_DELETE_TOGGLE_LOADING = 'TRACK_DELETE_TOGGLE_LOADING';
+import { makeTypes } from '../../../../common/store/delete/mutation_types';
+const { TYPEPROCESSING: types } = makeTypes('TYPEPROCESSING');
+export { types };

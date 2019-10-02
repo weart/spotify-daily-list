@@ -2,38 +2,56 @@
   <q-card class="my-card">
     <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
       <div class="absolute-bottom">
-        <div class="text-h6">{{ poll.name }}</div>
-        <div class="text-subtitle2">{{ poll.id }}</div>
+        <div class="text-h6">
+          {{ poll.name }}
+        </div>
+        <div class="text-subtitle2">
+          {{ poll.id }}
+        </div>
       </div>
     </q-img>
-    <q-card-actions class="bg-blue" v-if="isEditable">
-      <q-btn @click="dialogVote = true" :ripple="{ center: true }" color="accent">
+    <q-card-actions
+      class="bg-blue"
+      v-if="isEditable"
+    >
+      <q-btn
+        @click="dialogVote = true"
+        :ripple="{ center: true }"
+        color="accent"
+      >
         {{ $t('Rate songs') }}
       </q-btn>
-      <q-btn @click="dialogSuggestSong = true" :ripple="{ center: true }" color="warning">
+      <q-btn
+        @click="dialogSuggestSong = true"
+        :ripple="{ center: true }"
+        color="warning"
+      >
         {{ $t('Suggest new song') }}
       </q-btn>
-      <q-btn @click="dialogEndPoll = true" :ripple="{ center: true }" color="negative">
-      {{ $t('Finish poll') }}
+      <q-btn
+        @click="dialogEndPoll = true"
+        :ripple="{ center: true }"
+        color="negative"
+      >
+        {{ $t('Finish poll') }}
       </q-btn>
     </q-card-actions>
 
     <pollVoteTracksDialog
-      v-bind:poll="poll"
-      v-bind:openDialog="dialogVote"
-      v-on:closeDialog="closeDialog"
-    ></pollVoteTracksDialog>
+      :poll="poll"
+      :open-dialog="dialogVote"
+      @closeDialog="closeDialog"
+    />
 
     <pollAddTrackDialog
-      v-bind:poll="poll"
-      v-bind:openDialog="dialogSuggestSong"
-    ></pollAddTrackDialog>
+      :poll="poll"
+      :open-dialog="dialogSuggestSong"
+    />
 
     <pollEndDialog
-      v-bind:poll="poll"
-      v-bind:openDialog="dialogEndPoll"
-    ></pollEndDialog>
-
+      :poll="poll"
+      :open-dialog="dialogEndPoll"
+    />
   </q-card>
 </template>
 

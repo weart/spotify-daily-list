@@ -1,5 +1,3 @@
-export const TRACK_CREATE_RESET = 'TRACK_CREATE_RESET';
-export const TRACK_CREATE_SET_CREATED = 'TRACK_CREATE_SET_CREATED';
-export const TRACK_CREATE_SET_ERROR = 'TRACK_CREATE_SET_ERROR';
-export const TRACK_CREATE_SET_VIOLATIONS = 'TRACK_CREATE_SET_VIOLATIONS';
-export const TRACK_CREATE_TOGGLE_LOADING = 'TRACK_CREATE_TOGGLE_LOADING';
+import { makeTypes } from '../../../../common/store/create/mutation_types';
+const { TRACK: types } = makeTypes('TRACK');
+export { types };

@@ -1,6 +1,12 @@
 <template>
   <div class="q-ma-xl">
-    <q-ajax-bar ref="bar" position="top" color="accent" size="10px" skip-hijack />
+    <q-ajax-bar
+      ref="bar"
+      position="top"
+      color="accent"
+      size="10px"
+      skip-hijack
+    />
     <q-toolbar class="q-my-md">
       <!--
       <q-breadcrumbs class="q-mr-sm">
@@ -17,12 +23,26 @@
       <h4>New poll</h4>
       <q-space />
       <div>
-        <q-btn :label="$t('Submit')" color="primary" @click="onSendForm" />
-        <q-btn :label="$t('Reset')" color="primary" flat class="q-ml-sm" @click="resetForm" />
+        <q-btn
+          :label="$t('Submit')"
+          color="primary"
+          @click="onSendForm"
+        />
+        <q-btn
+          :label="$t('Reset')"
+          color="primary"
+          flat
+          class="q-ml-sm"
+          @click="resetForm"
+        />
       </div>
     </q-toolbar>
 
-    <PollForm ref="createForm" :values="item" :errors="violations" />
+    <PollForm
+      ref="createForm"
+      :values="item"
+      :errors="violations"
+    />
   </div>
 </template>
 

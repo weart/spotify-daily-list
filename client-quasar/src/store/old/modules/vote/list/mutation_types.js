@@ -1,0 +1,6 @@
+export const RESET = 'VOTE_LIST_RESET';
+export const SET_ITEMS = 'VOTE_LIST_SET_ITEMS';
+export const SET_ERROR = 'VOTE_LIST_SET_ERROR';
+export const SET_VIEW = 'VOTE_LIST_SET_VIEW';
+export const TOGGLE_LOADING = 'VOTE_LIST_TOGGLE_LOADING';
+export const SET_TOTALITEMS = 'VOTE_LIST_SET_TOTALITEMS';

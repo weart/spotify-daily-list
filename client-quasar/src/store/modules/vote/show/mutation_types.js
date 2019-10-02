@@ -1,4 +1,3 @@
-export const VOTE_SHOW_RESET = 'VOTE_SHOW_RESET';
-export const VOTE_SHOW_SET_ERROR = 'VOTE_SHOW_SET_ERROR';
-export const VOTE_SHOW_SET_RETRIEVED = 'VOTE_SHOW_SET_RETRIEVED';
-export const VOTE_SHOW_TOGGLE_LOADING = 'VOTE_SHOW_TOGGLE_LOADING';
+import { makeTypes } from '../../../../common/store/show/mutation_types';
+const { VOTE: types } = makeTypes('VOTE');
+export { types };
