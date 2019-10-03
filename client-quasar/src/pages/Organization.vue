@@ -17,15 +17,13 @@
         />
       </q-breadcrumbs>
       <q-space />
-      <div>
-        <q-btn
-          flat
-          round
-          dense
-          icon="add"
-          @click="organizationCreate"
-        />
-      </div>
+      <q-btn
+        flat
+        round
+        dense
+        icon="add"
+        @click="organizationCreate"
+      />
     </q-toolbar>
 
     <div
@@ -211,6 +209,30 @@
                   />
                 </q-item-section>
               </q-item>
+              <q-item v-if="!readonly && !disable">
+                <q-item-section avatar>
+                  <q-item-label>
+                    Invite new member
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section>
+                  <q-input
+                    label="id"
+                    v-model="invite"
+                  />
+                </q-item-section>
+                <q-item-section thumbnail>
+                  <q-btn
+                    flat
+                    rounded
+                    icon="send"
+                    label="Send"
+                  >
+                    <!--icon: mail_outline-->
+                    <q-tooltip>Send invitation</q-tooltip>
+                  </q-btn>
+                </q-item-section>
+              </q-item>
             </q-list>
           </q-form>
         </q-card-section>
@@ -237,6 +259,7 @@ export default {
     return {
       readonly: false,
       disable: false,
+      invite: '',
     };
   },
   computed: {

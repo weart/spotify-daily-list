@@ -12,12 +12,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ *     attributes={"access_control"="is_granted('ROLE_ADMIN')"},
  * @ApiResource(
  *     iri="https://schema.org/Person",
- *     attributes={"access_control"="is_granted('ROLE_ADMIN')"},
  * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="users")
+ * @ORM\HasLifecycleCallbacks
  */
 class User implements UserInterface
 {
@@ -59,6 +60,7 @@ class User implements UserInterface
      *
      * @ORM\Column(type="datetimetz_immutable", nullable=false)
      * @Assert\NotNull
+     * @ApiProperty(iri="http://schema.org/startTime")
      */
     private $createdAt;
 
@@ -171,6 +173,16 @@ class User implements UserInterface
     public function setUpdateAt()
     {
         $this->updatedAt = new \DateTime();
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
     }
 
     public function getId(): Uuid
@@ -308,18 +320,18 @@ class User implements UserInterface
 
     public function getSessions(): array
     {
-        return $this->getSessionsRaw();
+        return $this->getSessionsRaw()->getValues();
     }
 
-    public function getSessionRaw(): Collection
+    public function getSessionsRaw(): Collection
     {
         return $this->sessions;
     }
 
     public function addSession(Session $session): bool
     {
-        if (!$this->getSessionRaw()->contains($session)) {
-            return $this->getSessionRaw()->add($session);
+        if (!$this->getSessionsRaw()->contains($session)) {
+            return $this->getSessionsRaw()->add($session);
         }
         return true;
     }

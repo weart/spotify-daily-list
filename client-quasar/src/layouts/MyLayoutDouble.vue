@@ -23,11 +23,11 @@
         />
         <q-space />
         <q-btn
-          push
+          @click="openLoginDialog"
+          :ripple="{ center: true }"
           icon="account_box"
+          push
           type="a"
-          :href="spotify_login"
-          target="_blank"
         >
           {{ $t('Login') }}
         </q-btn>
@@ -45,26 +45,31 @@
 
     <q-page-container>
       <router-view />
+      <login-dialog
+        ref="loginDialog"
+        v-model="loginDialog"
+      />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import { openURL } from 'quasar';
-import { ENTRYPOINT } from 'src/config/entrypoint';
+import LoginDialog from 'src/components/LoginDialog';
 
 export default {
   name: 'MyLayoutDouble',
+  components: {
+    LoginDialog,
+  },
   data() {
     return {
-      spotify_login: `${ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/')}spotify/login`,
+      loginDialog: false,
     };
   },
   methods: {
-    openURL,
+    openLoginDialog() {
+      this.$refs.loginDialog.open();
+    }
   },
 };
 </script>
-
-<style>
-</style>

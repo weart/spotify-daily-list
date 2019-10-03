@@ -15,10 +15,12 @@
             Discoveryfy
           </q-toolbar-title>
           <q-btn
+            @click="openLoginDialog"
+            :ripple="{ center: true }"
+            icon="account_box"
             flat
             round
             dense
-            icon="account_box"
           />
         </q-toolbar>
 
@@ -40,13 +42,6 @@
           >
             {{ this.$route.name }}
           </q-toolbar-title>
-
-          <!--
-          <q-btn push icon="account_box" type="a" :href="spotify_login" target="_blank">
-            {{ $t('Login') }}
-          </q-btn>
-          <q-btn flat round dense icon="how_to_vote" />
-          -->
           <q-btn
             flat
             round
@@ -58,27 +53,32 @@
 
       <q-page-container>
         <router-view />
+        <login-dialog
+          ref="loginDialog"
+          v-model="loginDialog"
+        />
       </q-page-container>
     </q-layout>
   </div>
 </template>
 
 <script>
-import { openURL } from 'quasar';
-import { ENTRYPOINT } from 'src/config/entrypoint';
+import LoginDialog from 'src/components/LoginDialog';
 
 export default {
   name: 'CardLayout',
+  components: {
+    LoginDialog,
+  },
   data() {
     return {
-      spotify_login: `${ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/')}spotify/login`,
+      loginDialog: false,
     };
   },
   methods: {
-    openURL,
+    openLoginDialog() {
+      this.$refs.loginDialog.open();
+    }
   },
 };
 </script>
-
-<style>
-</style>

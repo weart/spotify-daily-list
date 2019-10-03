@@ -94,7 +94,7 @@ class Membership
         $this->id = Uuid::uuid4();
         $this->createdAt = new \DateTimeImmutable();
         $this->organization = $organization;
-        $this->ḿember = $member;
+        $this->member = $member;
         $this->setRol($rol);
     }
 

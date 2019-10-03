@@ -26,11 +26,9 @@
           Discoveryfy: {{ this.$route.name }}
         </q-toolbar-title>
         <q-btn
-          push
-          icon="perm_identity"
-          type="a"
-          :href="spotify_login"
-          target="_blank"
+          @click="openLoginDialog"
+          :ripple="{ center: true }"
+          icon="account_box"
         >
           {{ $t('Login') }}
         </q-btn>
@@ -48,26 +46,31 @@
 
     <q-page-container>
       <router-view />
+      <login-dialog
+        ref="loginDialog"
+        v-model="loginDialog"
+      />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import { openURL } from 'quasar';
-import { ENTRYPOINT } from 'src/config/entrypoint';
+import LoginDialog from 'src/components/LoginDialog';
 
 export default {
   name: 'MyLayoutGrouped',
+  components: {
+    LoginDialog,
+  },
   data() {
     return {
-      spotify_login: `${ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/')}spotify/login`,
+      loginDialog: false,
     };
   },
   methods: {
-    openURL,
+    openLoginDialog() {
+      this.$refs.loginDialog.open();
+    }
   },
 };
 </script>
-
-<style>
-</style>

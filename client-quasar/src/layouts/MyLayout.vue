@@ -21,17 +21,15 @@
           Discoveryfy: {{ this.$route.name }}
         </q-toolbar-title>
         <q-space />
+
         <q-btn
-          push
+          @click="openLoginDialog"
+          :ripple="{ center: true }"
           icon="account_box"
-          type="a"
-          :href="spotify_login"
-          target="_blank"
         >
           {{ $t('Login') }}
         </q-btn>
       </q-toolbar>
-
       <!--
       <q-tabs inline-label class="bg-primary text-white shadow-2">
         <q-route-tab to="/polls?active=1" label="Current polls" icon="gavel">
@@ -44,26 +42,48 @@
 
     <q-page-container>
       <router-view />
+      <login-dialog
+        ref="loginDialog"
+        v-model="loginDialog"
+      />
+      <register-dialog
+        ref="registerDialog"
+        v-model="registerDialog"
+      />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import { openURL } from 'quasar';
-import { ENTRYPOINT } from 'src/config/entrypoint';
+import LoginDialog from 'src/components/LoginDialog';
+import RegisterDialog from "../components/RegisterDialog";
 
 export default {
   name: 'MyLayout',
+  components: {
+    LoginDialog,
+    RegisterDialog,
+  },
   data() {
     return {
-      spotify_login: `${ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/')}spotify/login`,
+      loginDialog: false,
+      registerDialog: false,
     };
   },
+  mounted() {
+    this.$root.$on('openLoginDialog', this.openLoginDialog);
+    this.$root.$on('openRegisterDialog', this.openRegisterDialog);
+  },
+  beforeDestroy() {
+    this.$root.$off(['openLoginDialog','openRegisterDialog']);
+  },
   methods: {
-    openURL,
+    openLoginDialog() {
+      this.$refs.loginDialog.open();
+    },
+    openRegisterDialog() {
+      this.$refs.registerDialog.open();
+    }
   },
 };
 </script>
-
-<style>
-</style>

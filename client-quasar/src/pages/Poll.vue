@@ -17,15 +17,13 @@
         />
       </q-breadcrumbs>
       <q-space />
-      <div>
-        <q-btn
-          flat
-          round
-          dense
-          icon="add"
-          @click="pollCreate"
-        />
-      </div>
+      <q-btn
+        flat
+        round
+        dense
+        icon="add"
+        @click="pollCreate"
+      />
     </q-toolbar>
 
     <div

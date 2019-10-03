@@ -15,8 +15,10 @@
             Discoveryfy
           </q-toolbar-title>
           <q-btn
-            push
+            @click="openLoginDialog"
+            :ripple="{ center: true }"
             icon="account_box"
+            push
             type="a"
           >
             {{ $t('Login') }}
@@ -48,18 +50,33 @@
 
       <q-page-container>
         <router-view />
+        <login-dialog
+          ref="loginDialog"
+          v-model="loginDialog"
+        />
       </q-page-container>
     </q-layout>
   </div>
 </template>
 
 <script>
+import LoginDialog from 'src/components/LoginDialog';
+
 export default {
   name: 'IosLayout',
+  components: {
+    LoginDialog,
+  },
   data() {
     return {
+      loginDialog: false,
       tab: 'gavel',
     };
+  },
+  methods: {
+    openLoginDialog() {
+      this.$refs.loginDialog.open();
+    }
   },
 };
 </script>
