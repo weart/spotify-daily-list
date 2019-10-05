@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -18,12 +19,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     iri="https://schema.org/Question",
  *     collectionOperations={"get","post"},
  *     itemOperations={
- *         "get",
+ *         "get"={
+ *             "normalization_context"={"groups"={"poll:readAll"}}
+ *         },
  *         "put",
  *         "delete",
- *         "finish"={"path"="/polls/{id}/finish", "method"="PUT"},
- *         "finish"={"path"="/polls/{id}/restart", "method"="PUT"},
- *     }
+ *     },
+ *     normalizationContext={"groups"={"poll:read"}, "swagger_definition_name"="ReadPoll"},
+ *     denormalizationContext={"groups"={"poll:write"}, "swagger_definition_name"="WritePoll"}
  * )
  * @ORM\Entity
  * @ORM\Table(name="polls")
@@ -36,6 +39,7 @@ class Poll
      * @ORM\Id
      * @ORM\Column(name="id", type="uuid", unique=true, nullable=false)
      * @ApiProperty(identifier=true)
+     * @Groups({"poll:read", "poll:readAll", "track:read"})
      */
     private $id;
 
@@ -45,6 +49,7 @@ class Poll
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/text")
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $name;
 
@@ -54,6 +59,7 @@ class Poll
      * @ORM\Column(type="datetimetz_immutable", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/datePublished")
+     * @Groups({"poll:read", "poll:readAll"})
      */
     private $startDate;
 
@@ -62,6 +68,7 @@ class Poll
      *
      * @ORM\Column(type="datetimetz_immutable", nullable=true)
      * @ApiProperty(iri="http://schema.org/expires")
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $endDate;
 
@@ -70,16 +77,41 @@ class Poll
      * the winner song goes to winner playlist and the others to the historic playlist.
      *
      * @ORM\Column(type="string", nullable=true)
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $restartDate;
 
     /**
      * @var array|null All the images from the Spotify playlist
+     * @example [ {
+     *      height 	integer 	The image height in pixels. If unknown: null or not returned.
+     *      url 	string 	    The source URL of the image.
+     *      width 	integer 	The image width in pixels. If unknown: null or not returned.
+     * } ]
      *
      * @ORM\Column(type="json", nullable=true)
      * @ApiProperty(iri="http://schema.org/image")
+     * @Groups({"poll:read", "poll:readAll"})
      */
     private $spotifyPlaylistImages;
+
+    /**
+     * @var boolean|null If true the playlist will be public, if false it will be private.
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
+     */
+    private $spotifyPlaylistPublic = null;
+
+    /**
+     * @var boolean|null If true, the playlist will become collaborative and other users
+     * will be able to modify the playlist in their Spotify client.
+     * Note: You can only set collaborative to true on non-public playlists.
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
+     */
+    private $spotifyPlaylistCollaborative = null;
 
     /**
      * @var string|null Spotify resource identifier
@@ -89,6 +121,7 @@ class Poll
      *
      * @ORM\Column(type="string", nullable=true)
      * @ApiProperty(iri="http://schema.org/identifier")
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $spotifyPlaylistUri = null;
 
@@ -100,6 +133,7 @@ class Poll
      *
      * @ORM\Column(type="string", nullable=true)
      * @ApiProperty(iri="http://schema.org/identifier")
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $spotifyWinnerPlaylistUri = null;
 
@@ -111,6 +145,7 @@ class Poll
      *
      * @ORM\Column(type="string", nullable=true)
      * @ApiProperty(iri="http://schema.org/identifier")
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $spotifyHistoricPlaylistUri = null;
 
@@ -118,27 +153,41 @@ class Poll
      * @var bool Is this poll visible to anyone or only to the members of the organization?
      *
      * @ORM\Column(type="boolean", nullable=false, options={"default":0})
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $publicVisibility = false;
+
+    /**
+     * @var bool Are the votes public meanwhile the poll is active?
+     *
+     * @ORM\Column(type="boolean", nullable=false, options={"default":0})
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
+     */
+    private $publicVotes = false;
 
     /**
      * @var bool Can anyone vote into this poll or only the members of the organization?
      *
      * @ORM\Column(type="boolean", nullable=false, options={"default":1})
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $anonCanVote = true;
 
     /**
-     * @var bool Can anyone add tracks into this poll or only members of the organization?
+     * @var boolean|null Who can add tracks into this poll?
+     * null => nobody, 0 => owner, 1 => admin, 2 => member, 3 => invited, 4 => anyone
      *
-     * @ORM\Column(type="boolean", nullable=false, options={"default":0})
+     *
+     * @ORM\Column(type="smallint", nullable=true)
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
-    private $anonCanAddTrack = false;
+    private $whoCanAddTrack = null;
 
     /**
      * @var int All the ratings given by a anonymous user to this poll can't excede this number
      *
      * @ORM\Column(type="smallint", nullable=false, options={"default":1})
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $anonVotesMaxRating = 1;
 
@@ -146,6 +195,7 @@ class Poll
      * @var int All the ratings given by a member to this poll can't excede this number
      *
      * @ORM\Column(type="smallint", nullable=false, options={"default":10})
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $userVotesMaxRating = 10;
 
@@ -153,6 +203,7 @@ class Poll
      * @var bool Can one user add more than one track to this poll?
      *
      * @ORM\Column(type="boolean", nullable=false, options={"default":1})
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $multipleUserTracks = true;
 
@@ -160,6 +211,7 @@ class Poll
      * @var bool Can an anonymous user add more than one track to this poll?
      *
      * @ORM\Column(type="boolean", nullable=false, options={"default":1})
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $multipleAnonTracks = true;
 
@@ -167,6 +219,7 @@ class Poll
      * @var Organization The organization owner of this poll
      *
      * @ORM\ManyToOne(targetEntity="Organization", inversedBy="polls")
+     * @Groups({"poll:read", "poll:readAll"})
      */
     private $organization;
 
@@ -175,6 +228,7 @@ class Poll
      *
      * @ORM\OneToMany(targetEntity="Track", mappedBy="poll", cascade={"persist", "remove"})
      * @ApiSubresource
+     * @Groups("poll:readAll")
      */
     private $tracks;
 
@@ -183,6 +237,7 @@ class Poll
      *
      * @ORM\OneToMany(targetEntity="Vote", mappedBy="poll", cascade={"persist", "remove"})
      * @ApiSubresource
+     * @Groups("poll:readAll")
      */
     private $votes;
 
@@ -257,6 +312,28 @@ class Poll
     public function setSpotifyPlaylistImages(array $spotifyPlaylistImages): self
     {
         $this->spotifyPlaylistImages = $spotifyPlaylistImages;
+        return $this;
+    }
+
+    public function getSpotifyPlaylistPublic(): ?bool
+    {
+        return $this->spotifyPlaylistPublic;
+    }
+
+    public function setSpotifyPlaylistPublic(?bool $spotifyPlaylistPublic): Poll
+    {
+        $this->spotifyPlaylistPublic = $spotifyPlaylistPublic;
+        return $this;
+    }
+
+    public function getSpotifyPlaylistCollaborative(): ?bool
+    {
+        return $this->spotifyPlaylistCollaborative;
+    }
+
+    public function setSpotifyPlaylistCollaborative(?bool $spotifyPlaylistCollaborative): Poll
+    {
+        $this->spotifyPlaylistCollaborative = $spotifyPlaylistCollaborative;
         return $this;
     }
 
@@ -341,6 +418,17 @@ class Poll
         return $this;
     }
 
+    public function isPublicVotes(): bool
+    {
+        return $this->publicVotes;
+    }
+
+    public function setPublicVotes(bool $publicVotes): Poll
+    {
+        $this->publicVotes = $publicVotes;
+        return $this;
+    }
+
     public function isAnonCanVote(): bool
     {
         return $this->anonCanVote;
@@ -352,14 +440,24 @@ class Poll
         return $this;
     }
 
-    public function isAnonCanAddTrack(): bool
+    public function whoCanAddTrack(): ?bool
     {
-        return $this->anonCanAddTrack;
+        return $this->whoCanAddTrack;
     }
 
-    public function setAnonCanAddTrack(bool $anonCanAddTrack): self
+    public function setWhoCanAddTrack(?int $whoCanAddTrack): self
     {
-        $this->anonCanAddTrack = $anonCanAddTrack;
+        // null => nobody, 0 => owner, 1 => admin, 2 => member, 3 => invited, 4 => anyone
+        if ($whoCanAddTrack !== null) {
+            $whoCanAddTrack = intval($whoCanAddTrack, 10);
+        }
+        if ($whoCanAddTrack < 0) {
+            $whoCanAddTrack = null;
+        }
+        if ($whoCanAddTrack > 3) {
+            $whoCanAddTrack = 4;
+        }
+        $this->whoCanAddTrack = $whoCanAddTrack;
         return $this;
     }
 
@@ -410,6 +508,14 @@ class Poll
     public function getOrganization(): Organization
     {
         return $this->organization;
+    }
+
+    /**
+     * @Groups({"poll:read", "poll:readAll"})
+     */
+    public function getNumTracks(): int
+    {
+        return $this->getTracksRaw()->count();
     }
 
     public function getTracks(): array
@@ -468,6 +574,14 @@ class Poll
             return $this->votes->add($vote);
         }
         return true;
+    }
+
+    /**
+     * @Groups({"poll:read", "poll:readAll"})
+     */
+    public function getNumVotes(): int
+    {
+        return $this->getVotesRaw()->count();
     }
 
     public function getVotes(): array

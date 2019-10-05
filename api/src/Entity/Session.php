@@ -8,12 +8,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
  *     iri="https://schema.org/AuthorizeAction",
  *     attributes={"access_control"="is_granted('ROLE_ADMIN')"},
+ *     collectionOperations={"post"},
+ *     itemOperations={"put"},
+ *     normalizationContext={"groups"={"session:read"}, "swagger_definition_name"="ReadSession"},
+ *     denormalizationContext={"groups"={"session:write"}, "swagger_definition_name"="WriteSession"}
  * )
  * @ORM\Entity
  * @ORM\Table(name="sessions")
@@ -26,6 +31,7 @@ class Session
      * @ORM\Id
      * @ORM\Column(name="id", type="uuid", unique=true, nullable=false)
      * @ApiProperty(identifier=true)
+     * @Groups({"session:read", "track:read"})
      */
     private $id;
 
@@ -34,6 +40,7 @@ class Session
      *
      * @ORM\Column(type="string", nullable=true)
      * @ApiProperty(iri="http://schema.org/agent")
+     * @Groups({"session:read", "session:write"})
      */
     private $name = null;
 
@@ -43,6 +50,7 @@ class Session
      * @ORM\Column(type="datetimetz_immutable", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/startTime")
+     * @Groups("session:read")
      */
     private $createdAt;
 
@@ -51,6 +59,7 @@ class Session
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="sessions")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @Groups("session:read")
      */
     private $user;
 
@@ -58,6 +67,7 @@ class Session
      * @var Track[] Tracks added in this session
      *
      * @ORM\OneToMany(targetEntity="Track", mappedBy="session")
+     * @Groups("session:read")
      */
     private $tracks;
 
@@ -65,6 +75,7 @@ class Session
      * @var Vote[] Votes emitted in this session
      *
      * @ORM\OneToMany(targetEntity="Vote", mappedBy="session")
+     * @Groups("session:read")
      */
     private $votes;
 

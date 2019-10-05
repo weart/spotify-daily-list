@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -13,8 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiResource(
  *     iri="https://schema.org/MusicRecording",
- *     collectionOperations={"get"},
- *     itemOperations={"get","put","delete"}
+ *     collectionOperations={},
+ *     itemOperations={"get","put","delete"},
+ *     normalizationContext={"groups"={"track:read"}, "swagger_definition_name"="ReadTrack"},
+ *     denormalizationContext={"groups"={"track:write"}, "swagger_definition_name"="WriteTrack"}
  * )
  * @ORM\Entity
  * @ORM\Table(name="tracks")
@@ -27,6 +30,7 @@ class Track
      * @ORM\Id
      * @ORM\Column(name="id", type="uuid", unique=true, nullable=false)
      * @ApiProperty(identifier=true)
+     * @Groups({"track:read", "poll:readAll"})
      */
     private $id;
 
@@ -36,6 +40,7 @@ class Track
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/byArtist")
+     * @Groups({"track:read", "track:write", "poll:readAll"})
      */
     private $artist;
 
@@ -45,6 +50,7 @@ class Track
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/name")
+     * @Groups({"track:read", "track:write", "poll:readAll"})
      */
     private $name;
 
@@ -53,6 +59,7 @@ class Track
      *
      * @ORM\Column(type="datetimetz_immutable", nullable=false)
      * @Assert\NotNull
+     * @Groups("track:read")
      */
     private $proposalDate;
 
@@ -64,6 +71,7 @@ class Track
      *
      * @ORM\Column(type="string", nullable=true)
      * @ApiProperty(iri="http://schema.org/identifier")
+     * @Groups({"track:read", "track:write", "poll:readAll"})
      */
     private $spotifyUri;
 
@@ -72,6 +80,7 @@ class Track
      *
      * @ORM\Column(type="json", nullable=true)
      * @ApiProperty(iri="http://schema.org/image")
+     * @Groups({"track:read", "track:write", "poll:readAll"})
      */
     private $spotifyImages;
 
@@ -81,6 +90,7 @@ class Track
      *
      * @ORM\Column(type="string", nullable=true)
      * @ApiProperty(iri="http://schema.org/identifier")
+     * @Groups({"track:read", "track:write", "poll:readAll"})
      */
     private $youtubeUri;
 
@@ -90,6 +100,7 @@ class Track
      * @ORM\ManyToOne(targetEntity="Poll", inversedBy="tracks")
      * @ORM\JoinColumn(name="poll_id", referencedColumnName="id", nullable=false)
      * @Assert\NotNull
+     * @Groups("track:read")
      */
     private $poll;
 
@@ -99,6 +110,7 @@ class Track
      * @ORM\ManyToOne(targetEntity="Session", inversedBy="tracks")
      * @ORM\JoinColumn(name="session_id", referencedColumnName="id", nullable=false)
      * @Assert\NotNull
+     * @Groups({"track:read", "track:write"})
      */
     private $session;
 
@@ -107,6 +119,7 @@ class Track
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="tracks")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
+     * @Groups("track:read")
      */
     private $user;
 

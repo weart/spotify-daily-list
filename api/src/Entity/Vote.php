@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -14,7 +15,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     iri="https://schema.org/Rating",
  *     collectionOperations={"get"},
- *     itemOperations={"get","put","delete"}
+ *     itemOperations={"get","put","delete"},
+ *     normalizationContext={"groups"={"vote:read"}, "swagger_definition_name"="ReadVote"},
+ *     denormalizationContext={"groups"={"vote:write"}, "swagger_definition_name"="WriteVote"}
  * )
  * @ORM\Entity
  * @ORM\Table(name="votes")
@@ -27,6 +30,7 @@ class Vote
      * @ORM\Id
      * @ORM\Column(name="id", type="uuid", unique=true, nullable=false)
      * @ApiProperty(identifier=true)
+     * @Groups({"vote:read", "poll:readAll"})
      */
     private $id;
 
@@ -35,6 +39,7 @@ class Vote
      *
      * @ORM\Column(type="datetimetz_immutable", nullable=false)
      * @Assert\NotNull
+     * @Groups("vote:read")
      */
     private $createdAt;
 
@@ -44,6 +49,7 @@ class Vote
      * @ORM\Column(type="smallint", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/ratingValue")
+     * @Groups({"vote:read", "vote:write", "poll:readAll"})
      */
     public $rating;
 

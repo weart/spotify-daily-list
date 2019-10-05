@@ -10,10 +10,10 @@
         </div>
         <!--<div class="text-subtitle2">Org: {{ poll.organization.name }}</div>-->
         <div class="text-subtitle2">
-          Num Tracks: {{ poll.tracks.length }}
+          Num Tracks: {{ poll.numTracks }}
         </div>
         <div class="text-subtitle2">
-          Num Votes: {{ poll.votes.length }}
+          Num Votes: {{ poll.numVotes }}
         </div>
       </div>
     </q-img>

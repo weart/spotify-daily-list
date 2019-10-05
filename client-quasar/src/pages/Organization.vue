@@ -62,10 +62,10 @@
           style="max-height: 50vh"
           class="scroll"
         >
-          <template v-if="!item || !item.members || item.members.length == 0">
+          <template v-if="!item || !item.memberships || item.memberships.length == 0">
             <h5>Without members</h5>
           </template>
-          <template v-if="item && item.members.length > 0">
+          <template v-if="item && item.memberships.length > 0">
             <members-list :organization="item" />
           </template>
         </q-card-section>
@@ -124,8 +124,8 @@
             <q-input
               label="id"
               v-model="item.id"
-              :readonly="readonly"
-              :disable="disable"
+              readonly
+              disable
             />
             <span>{{ formatDateTime(item.createdAt, 'long') }}</span>
             <q-input

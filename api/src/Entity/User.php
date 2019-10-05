@@ -9,12 +9,20 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *     attributes={"access_control"="is_granted('ROLE_ADMIN')"},
  * @ApiResource(
  *     iri="https://schema.org/Person",
+ *     collectionOperations={"post"},
+ *     itemOperations={
+ *         "get",
+ *         "put"
+ *     },
+ *     normalizationContext={"groups"={"user:read"}, "swagger_definition_name"="ReadUser"},
+ *     denormalizationContext={"groups"={"user:write"}, "swagger_definition_name"="WriteUser"}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="users")
@@ -28,6 +36,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\Column(name="id", type="uuid", unique=true, nullable=false)
      * @ApiProperty(identifier=true)
+     * @Groups({"user:read", "organization:readAll", "membership:read", "track:read"})
      */
     private $id;
 
@@ -36,6 +45,7 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", unique=true, nullable=false, length=255)
      * @Assert\NotNull
+     * @Groups({"user:read", "user:write", "organization:readAll"})
      */
     private $username;
 
@@ -52,6 +62,7 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", unique=true, nullable=false, length=255)
      * @Assert\Email(normalizer="trim", mode="loose")
+     * @Groups({"user:read", "user:write"})
      */
     private $email;
 
@@ -61,6 +72,7 @@ class User implements UserInterface
      * @ORM\Column(type="datetimetz_immutable", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/startTime")
+     * @Groups("user:read")
      */
     private $createdAt;
 
@@ -69,6 +81,7 @@ class User implements UserInterface
      *
      * @ORM\Column(type="datetimetz", nullable=false)
      * @Assert\NotNull
+     * @Groups("user:read")
      */
     private $updatedAt;
 
@@ -77,6 +90,7 @@ class User implements UserInterface
      *
      * @ORM\Column(type="boolean", nullable=false, options={"default":1})
      * @Assert\NotNull
+     * @Groups({"user:read", "user:write"})
      */
     private $enabled = true;
 
@@ -84,6 +98,7 @@ class User implements UserInterface
      * @var bool Is this user visible to anyone?
      *
      * @ORM\Column(type="boolean", nullable=false, options={"default":0})
+     * @Groups({"user:read", "user:write"})
      */
     private $publicVisibility = false;
 
@@ -91,8 +106,47 @@ class User implements UserInterface
      * @var bool Is the email of this user visible to anyone?
      *
      * @ORM\Column(type="boolean", nullable=false, options={"default":0})
+     * @Groups({"user:read", "user:write"})
      */
     private $publicEmail = false;
+
+    /**
+     * @var string Language of the app
+     *
+     * @ORM\Column(type="string", nullable=false, options={"default":"en"})
+     * @Groups({"user:read", "user:write"})
+     */
+    private $language = 'en';
+    public static function getValidLanguages(): array
+    {
+        return [ 'en' ];
+    }
+    public static function isValidLanguage(string $language): bool
+    {
+        if(!in_array($language, self::getValidLanguages(), true)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @var string Theme of the app
+     *
+     * @ORM\Column(type="string", nullable=false, options={"default":"default"})
+     * @Groups({"user:read", "user:write"})
+     */
+    private $theme = 'default';
+    public static function getValidThemes(): array
+    {
+        return [ 'default' ];
+    }
+    public static function isValidTheme(string $theme): bool
+    {
+        if(!in_array($theme, self::isValidTheme(), true)) {
+            return false;
+        }
+        return true;
+    }
 
     CONST ADMIN = 1;
     CONST MEMBER = 2;
@@ -269,6 +323,34 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(string $language): User
+    {
+        if (!self::isValidLanguage($language)) {
+            throw new \InvalidArgumentException(sprintf('Language %s is not valid', $language));
+        }
+        $this->language = $language;
+        return $this;
+    }
+
+    public function getTheme(): string
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(string $theme): User
+    {
+        if (!self::isValidTheme($theme)) {
+            throw new \InvalidArgumentException(sprintf('Theme %s is not valid', $theme));
+        }
+        $this->theme = $theme;
+        return $this;
+    }
+
     public function getRoles(): array
     {
         return $this->roles;
@@ -285,7 +367,7 @@ class User implements UserInterface
 
     public function addRole(int $rol): bool
     {
-        if(!self::isValidRol($rol)) {
+        if (!self::isValidRol($rol)) {
             throw new \InvalidArgumentException(sprintf('Rol %s is not valid', $rol));
         }
 

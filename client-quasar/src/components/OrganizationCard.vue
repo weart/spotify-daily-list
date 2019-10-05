@@ -18,8 +18,8 @@
 
     <q-card-section>id: {{ organization.id }}</q-card-section>
     <q-card-section>Created at: {{ organization.createdAt }}</q-card-section>
-    <q-card-section>Num members: {{ organization.memberships.length }}</q-card-section>
-    <q-card-section>Num polls: {{ organization.polls.length }}</q-card-section>
+    <q-card-section>Num members: {{ organization.numMemberships }}</q-card-section>
+    <q-card-section>Num polls: {{ organization.numPolls }}</q-card-section>
     <q-card-section>Public visibility: {{ organization.publicVisibility }}</q-card-section>
     <q-card-section>Public membership: {{ organization.publicMembership }}</q-card-section>
   </q-card>

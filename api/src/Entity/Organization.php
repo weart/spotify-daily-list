@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -19,10 +20,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     iri="https://schema.org/Organization",
  *     collectionOperations={"get"},
  *     itemOperations={
- *         "get",
+ *         "get"={
+ *             "normalization_context"={"groups"={"organization:readAll"}}
+ *         },
  *         "put",
  *         "delete",
- *     }
+ *     },
+ *     normalizationContext={"groups"={"organization:read"}, "swagger_definition_name"="GetOrganization"},
+ *     denormalizationContext={"groups"={"organization:write"}, "swagger_definition_name"="WriteOrganization"},
  * )
  * @ORM\Entity
  * @ORM\Table(name="organizations")
@@ -35,6 +40,7 @@ class Organization
      * @ORM\Id
      * @ORM\Column(name="id", type="uuid", unique=true, nullable=false)
      * @ApiProperty(identifier=true)
+     * @Groups({"organization:read", "organization:readAll", "membership:read", "poll:read", "poll:readAll"})
      */
     private $id;
 
@@ -43,6 +49,7 @@ class Organization
      *
      * @ORM\Column(type="datetimetz_immutable", nullable=false)
      * @ApiProperty(iri="http://schema.org/foundingDate")
+     * @Groups({"organization:read", "organization:readAll"})
      */
     private $createdAt;
 
@@ -52,6 +59,7 @@ class Organization
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/name")
+     * @Groups({"organization:read", "organization:readAll", "organization:write", "poll:read", "poll:readAll"})
      */
     private $name;
 
@@ -60,6 +68,7 @@ class Organization
      *
      * @ORM\Column(type="boolean", nullable=false, options={"default":1})
      * @Assert\NotNull
+     * @Groups({"organization:read", "organization:readAll", "organization:write"})
      */
     private $publicVisibility = false;
 
@@ -68,6 +77,7 @@ class Organization
      *
      * @ORM\Column(type="boolean", nullable=false, options={"default":0})
      * @Assert\NotNull
+     * @Groups({"organization:read", "organization:readAll", "organization:write"})
      */
     private $publicMembership = false;
 
@@ -76,6 +86,7 @@ class Organization
      *
      * @ORM\Column(type="smallint", nullable=false, options={"default":1})
      * @Assert\NotNull
+     * @Groups({"organization:read", "organization:readAll", "organization:write"})
      */
     private $canCreatePolls = Membership::ADMIN;
 
@@ -83,6 +94,8 @@ class Organization
      * @var Membership[] Members in this organization
      *
      * @ORM\OneToMany(targetEntity="Membership", mappedBy="organization", cascade={"persist", "remove"})
+     * @ApiSubresource
+     * @Groups({"organization:readAll"})
      */
     private $memberships;
 
@@ -91,6 +104,7 @@ class Organization
      *
      * @ORM\OneToMany(targetEntity="Poll", mappedBy="organization", cascade={"persist", "remove"})
      * @ApiSubresource
+     * @Groups({"organization:readAll"})
      */
     private $polls;
 
@@ -174,6 +188,14 @@ class Organization
         return $this;
     }
 
+    /**
+     * @Groups("organization:read")
+     */
+    public function getNumMemberships(): int
+    {
+        return $this->getMembershipsRaw()->count();
+    }
+
     public function getMemberships(): array
     {
         return $this->getMembershipsRaw()->getValues();
@@ -194,6 +216,14 @@ class Organization
         return $this->getMembershipsRaw()->map(function (Membership $membership) {
             $membership->getMember();
         });
+    }
+
+    /**
+     * @Groups("organization:read")
+     */
+    public function getNumPolls(): int
+    {
+        return $this->getPollsRaw()->count();
     }
 
     public function getPolls(): array

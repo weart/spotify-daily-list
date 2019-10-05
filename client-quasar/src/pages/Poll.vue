@@ -175,14 +175,14 @@
                 <q-input
                   label="id"
                   v-model="item.id"
-                  :readonly="readonly"
-                  :disable="disable"
+                  readonly
+                  disable
                 />
                 <q-input
                   label="Organization"
                   v-model="item.organization.name"
-                  :readonly="readonly"
-                  :disable="disable"
+                  readonly
+                  disable
                 />
                 <q-input
                   label="name"
@@ -286,28 +286,90 @@
               </q-tab-panel>
 
               <q-tab-panel name="spotify">
-                <!--
-              <q-input label="spotifyPlaylistImages"
-                v-model="item.spotifyPlaylistImages" :readonly="readonly" :disable="disable" />
-              -->
-                <q-input
-                  label="spotifyPlaylistUri"
-                  v-model="item.spotifyPlaylistUri"
-                  :readonly="readonly"
-                  :disable="disable"
-                />
-                <q-input
-                  label="spotifyWinnerPlaylistUri"
-                  v-model="item.spotifyWinnerPlaylistUri"
-                  :readonly="readonly"
-                  :disable="disable"
-                />
-                <q-input
-                  label="spotifyHistoricPlaylistUri"
-                  v-model="item.spotifyHistoricPlaylistUri"
-                  :readonly="readonly"
-                  :disable="disable"
-                />
+                <q-list>
+                  <q-item>
+                    <q-item-section>
+                      <!--
+                      <q-input label="spotifyPlaylistImages"
+                        v-model="item.spotifyPlaylistImages" :readonly="readonly" :disable="disable" />
+                      -->
+                      <q-input
+                        label="spotifyPlaylistUri"
+                        v-model="item.spotifyPlaylistUri"
+                        :readonly="readonly"
+                        :disable="disable"
+                      />
+                    </q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section>
+                      <q-input
+                        label="spotifyWinnerPlaylistUri"
+                        v-model="item.spotifyWinnerPlaylistUri"
+                        :readonly="readonly"
+                        :disable="disable"
+                      />
+                    </q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section>
+                      <q-input
+                        label="spotifyHistoricPlaylistUri"
+                        v-model="item.spotifyHistoricPlaylistUri"
+                        :readonly="readonly"
+                        :disable="disable"
+                      />
+                    </q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar>
+                      <q-item-label>
+                        Make this playlist public in Spotify?
+                      </q-item-label>
+                      <q-item-label caption>
+                        You can only set public to true on non-collaborative playlists
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-btn-toggle
+                        v-model="item.spotifyPlaylistPublic"
+                        spread
+                        rounded
+                        no-caps
+                        :readonly="readonly"
+                        :disable="disable"
+                        :options="[
+                          {label: 'Yes', value: true},
+                          {label: 'No', value: false},
+                        ]"
+                      />
+                    </q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar>
+                      <q-item-label>
+                        Make this playlist collaborative in Spotify?
+                      </q-item-label>
+                      <q-item-label caption>
+                        Other users will be able to modify the playlist in their Spotify client
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-btn-toggle
+                        v-model="item.spotifyPlaylistCollaborative"
+                        spread
+                        rounded
+                        no-caps
+                        :readonly="readonly"
+                        :disable="disable"
+                        :options="[
+                          {label: 'Yes', value: true},
+                          {label: 'No', value: false},
+                        ]"
+                      />
+                    </q-item-section>
+                  </q-item>
+                </q-list>
               </q-tab-panel>
 
 
@@ -350,15 +412,18 @@
                   <q-item>
                     <q-item-section>
                       <q-btn-toggle
-                        v-model="item.anonCanAddTrack"
+                        v-model="item.whoCanAddTrack"
                         spread
                         rounded
                         no-caps
                         :readonly="readonly"
                         :disable="disable"
                         :options="[
-                          {label: 'Anyone can suggest new tracks', value: true},
-                          {label: 'Only members of the group can suggest new tracks', value: false},
+                          {label: 'Anyone can suggest new tracks', value: 4},
+                          {label: 'Only members of the group can suggest new tracks', value: 2},
+                          {label: 'Only admin of the group can suggest new tracks', value: 1},
+                          {label: 'Only owner of the group can suggest new tracks', value: 0},
+                          {label: 'Nobody can suggest new tracks', value: null},
                         ]"
                       />
                     </q-item-section>

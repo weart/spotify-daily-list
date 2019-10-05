@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -14,12 +15,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     iri="https://schema.org/ProgramMembership",
  *     attributes={"access_control"="is_granted('ROLE_ADMIN')"},
- *     collectionOperations={"get"},
+ *     collectionOperations={"post"},
  *     itemOperations={
  *         "get",
  *         "put",
  *         "delete",
- *     }
+ *     },
+ *     normalizationContext={"groups"={"membership:read"}, "swagger_definition_name"="ReadMembership"},
+ *     denormalizationContext={"groups"={"membership:write"}, "swagger_definition_name"="WriteMembership"}
  * )
  * @ORM\Entity
  * @ORM\Table(name="memberships")
@@ -32,6 +35,7 @@ class Membership
      * @ORM\Id
      * @ORM\Column(name="id", type="uuid", unique=true, nullable=false)
      * @ApiProperty(identifier=true)
+     * @Groups({"organization:read", "membership:read", "organization:readAll"})
      */
     private $id;
 
@@ -39,6 +43,7 @@ class Membership
      * @var \DateTimeInterface DateTime when this object is created
      *
      * @ORM\Column(type="datetimetz_immutable", nullable=false)
+     * @Groups({"membership:read", "organization:readAll"})
      */
     private $createdAt;
 
@@ -65,6 +70,7 @@ class Membership
      *
      * @ORM\Column(type="smallint", nullable=false)
      * @Assert\NotNull
+     * @Groups({"membership:read", "membership:write", "organization:readAll"})
      */
     private $rol;
 
@@ -75,6 +81,7 @@ class Membership
      * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/member")
+     * @Groups({"membership:read", "organization:readAll"})
      */
     private $member;
 
@@ -85,6 +92,7 @@ class Membership
      * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/hostingOrganization")
+     * @Groups("membership:read")
      */
     private $organization;
 
