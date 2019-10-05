@@ -1,1 +1,1 @@
-export const ENTRYPOINT = 'http://d67dd8a3.ngrok.io';
+export const ENTRYPOINT = 'http://5b31d8b9.ngrok.io';

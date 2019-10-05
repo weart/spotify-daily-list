@@ -7,6 +7,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
+/**
+ * @method User|null find($id, $lockMode = null, $lockVersion = null)
+ * @method User|null findOneBy(array $criteria, array $orderBy = null)
+ * @method User[]    findAll()
+ * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 final class UserRepository extends ServiceEntityRepository
 {
 
@@ -22,7 +28,7 @@ final class UserRepository extends ServiceEntityRepository
     {
         return $this->_em;
     }
-
+/*
     public function getSpotifyListOwner(): User
     {
         return $this->getEm()->createQueryBuilder()
@@ -52,4 +58,5 @@ final class UserRepository extends ServiceEntityRepository
         $this->getEm()->persist($owner);
         $this->getEm()->flush();
     }
+*/
 }

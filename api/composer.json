@@ -8,12 +8,14 @@
         "api-platform/api-pack": "^1.1",
         "guzzlehttp/guzzle": "^6.3",
         "jwilsson/spotify-web-api-php": "^2.8",
+        "lexik/jwt-authentication-bundle": "^2.6",
         "ramsey/uuid-doctrine": "^1.5",
         "symfony/console": "4.3.*",
         "symfony/dotenv": "4.3.*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "4.3.*",
         "symfony/mercure-bundle": "*",
+        "symfony/security-bundle": "4.3.*",
         "symfony/yaml": "4.3.*"
     },
     "require-dev": {

@@ -13,14 +13,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- *     attributes={"access_control"="is_granted('ROLE_ADMIN')"},
  * @ApiResource(
  *     iri="https://schema.org/Person",
- *     collectionOperations={"post"},
+ *     collectionOperations={},
  *     itemOperations={
- *         "get",
- *         "put"
+ *         "get"={"security"="is_granted('ROLE_USER') and object.owner == user", "security_message"="Sorry, but you are not allowed to see that."},
+ *         "put"={"security"="is_granted('ROLE_USER') and object.owner == user", "security_message"="Sorry, but you are not allowed to change that."}
  *     },
+ *     attributes={"access_control"="is_granted('ROLE_ADMIN')"},
  *     normalizationContext={"groups"={"user:read"}, "swagger_definition_name"="ReadUser"},
  *     denormalizationContext={"groups"={"user:write"}, "swagger_definition_name"="WriteUser"}
  * )
@@ -50,7 +50,7 @@ class User implements UserInterface
     private $username;
 
     /**
-     * @var string The password of the user
+     * @var string The hashed password of the user
      *
      * @ORM\Column(type="string", nullable=false, length=255)
      * @Assert\NotNull
@@ -148,15 +148,15 @@ class User implements UserInterface
         return true;
     }
 
-    CONST ADMIN = 1;
-    CONST MEMBER = 2;
+    CONST ADMIN = 'ROLE_ADMIN';
+    CONST MEMBER = 'ROLE_USER';
 
     public static function getValidRoles(): array
     {
         return [ self::ADMIN, self::MEMBER ];
     }
 
-    public static function isValidRol(int $rol): bool
+    public static function isValidRol(string $rol): bool
     {
         if(!in_array($rol, self::getValidRoles(), true)) {
             return false;
@@ -165,12 +165,12 @@ class User implements UserInterface
     }
 
     /**
-     * @var array Roles of the user in this app: ADMIN = 1; MEMBER = 2;
+     * @var array Roles of the user in this app: ADMIN = ROLE_ADMIN; MEMBER = ROLE_USER;
      *
      * @ORM\Column(name="roles", type="json", nullable=false)
      * @Assert\NotNull
      */
-    private $roles;
+    private $roles = [];
 
     /**
      * @var Session[] Sessions created by this user
@@ -202,14 +202,13 @@ class User implements UserInterface
 
 
     public function __construct(
-        string $username, string $password, string $email,
+        string $username, string $email,
         bool $enabled = true, bool $publicVisibility = false, bool $publicEmail = false,
         array $roles = [ self::MEMBER ]
     ) {
         $this->id = Uuid::uuid4();
         $this->createdAt = new \DateTimeImmutable();
         $this->setUsername($username);
-        $this->password = $password; //@ToDO?
         $this->setEmail($email);
         $this->setEnabled($enabled);
         $this->setPublicVisibility($publicVisibility);
@@ -261,7 +260,13 @@ class User implements UserInterface
 
     public function getPassword(): string
     {
-        return $this->password;
+        return (string) $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+        return $this;
     }
 
     public function changePassword(string $old_password, string $new_password): bool
@@ -269,13 +274,21 @@ class User implements UserInterface
         throw new \Exception('@ToDo');
     }
 
+    /**
+     * @see UserInterface
+     */
     public function getSalt(): string
     {
         return '';
     }
 
+    /**
+     * @see UserInterface
+     */
     public function eraseCredentials()
     {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
         return null;
     }
 
@@ -353,7 +366,11 @@ class User implements UserInterface
 
     public function getRoles(): array
     {
-        return $this->roles;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
@@ -365,7 +382,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function addRole(int $rol): bool
+    public function addRole(string $rol): bool
     {
         if (!self::isValidRol($rol)) {
             throw new \InvalidArgumentException(sprintf('Rol %s is not valid', $rol));

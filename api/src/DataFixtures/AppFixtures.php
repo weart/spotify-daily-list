@@ -11,14 +11,23 @@ use App\Entity\User;
 use App\Entity\Vote;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
+    private $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
+    }
+
     public function load(ObjectManager $manager)
     {
         $organization = new Organization('Discoveryfy');
         $manager->persist($organization);
-        $user = new User('Leninux', 'abcd', 'discoverify@fabri.cat');
+        $user = new User('Leninux', 'discoverify@fabri.cat');
+        $user->setPassword($this->passwordEncoder->encodePassword($user,'1234567890'));
         $manager->persist($user);
         $membership = new Membership($user, $organization, Membership::OWNER);
         $manager->persist($membership);
