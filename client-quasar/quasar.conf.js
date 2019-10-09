@@ -7,7 +7,8 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     boot: [
       'i18n',
-      'addressbar-color'
+      'addressbar-color',
+      'axios',
     ],
 
     css: [
@@ -70,7 +71,7 @@ module.exports = function (ctx) {
         // 'QCard',
         // 'QCardSection',
         // 'QCardActions',
-        // 'QExpansionItem',
+        'QExpansionItem',
         // 'QDialog',
         // 'QAvatar',
 
@@ -110,6 +111,7 @@ module.exports = function (ctx) {
       plugins: [
         'AddressbarColor',
         'Notify',
+        'LocalStorage',
       ],
 
       config: {

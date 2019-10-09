@@ -22,13 +22,24 @@
         </q-toolbar-title>
         <q-space />
 
-        <q-btn
-          @click="openLoginDialog"
-          :ripple="{ center: true }"
-          icon="account_box"
-        >
-          {{ $t('Login') }}
-        </q-btn>
+        <template v-if="isAuthenticated">
+          <q-btn
+            to="/user"
+            :ripple="{ center: true }"
+            icon="account_box"
+          >
+            {{ $t('Profile') }}
+          </q-btn>
+        </template>
+        <template v-else>
+          <q-btn
+            @click="openLoginDialog"
+            :ripple="{ center: true }"
+            icon="account_box"
+          >
+            {{ $t('Login') }}
+          </q-btn>
+        </template>
       </q-toolbar>
       <!--
       <q-tabs inline-label class="bg-primary text-white shadow-2">
@@ -42,21 +53,23 @@
 
     <q-page-container>
       <router-view />
-      <login-dialog
-        ref="loginDialog"
-        v-model="loginDialog"
-      />
-      <register-dialog
-        ref="registerDialog"
-        v-model="registerDialog"
-      />
     </q-page-container>
+
+    <login-dialog
+      ref="loginDialog"
+      v-model="loginDialog"
+    />
+    <register-dialog
+      ref="registerDialog"
+      v-model="registerDialog"
+    />
   </q-layout>
 </template>
 
 <script>
 import LoginDialog from 'src/components/LoginDialog';
 import RegisterDialog from "../components/RegisterDialog";
+import auth from 'src/utils/auth';
 
 export default {
   name: 'MyLayout',
@@ -66,6 +79,7 @@ export default {
   },
   data() {
     return {
+      isAuthenticated: false,
       loginDialog: false,
       registerDialog: false,
     };
@@ -78,6 +92,10 @@ export default {
     this.$root.$off(['openLoginDialog','openRegisterDialog']);
   },
   methods: {
+    checkAuth() {
+      auth.checkAuth(this);
+      this.isAuthenticated = auth.user.authenticated;
+    },
     openLoginDialog() {
       this.$refs.loginDialog.open();
     },

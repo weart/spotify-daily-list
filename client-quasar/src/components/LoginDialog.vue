@@ -52,7 +52,7 @@
           size="lg"
           class="full-width"
           label="Login"
-          v-close-popup
+          @click="doLogin"
         />
       </q-card-actions>
       <q-card-section class="text-center q-pa-none q-px-md">
@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import auth from 'src/utils/auth';
+
 export default {
   name: 'LoginDialog',
   data () {
@@ -87,6 +89,12 @@ export default {
     openRegisterDialog() {
       this.close();
       this.$root.$emit('openRegisterDialog');
+    },
+    doLogin() {
+      auth.login({
+        email: this.email,
+        password: this.password,
+      }, '/profile');
     }
   }
 }

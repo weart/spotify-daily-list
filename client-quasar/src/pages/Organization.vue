@@ -45,6 +45,47 @@
       >
         <q-toolbar>
           <q-card-section class="card-title">
+            <div>Playlists</div>
+          </q-card-section>
+          <q-space />
+          <q-btn
+            flat
+            rounded
+            icon="add"
+            label="Create new playlist"
+          />
+        </q-toolbar>
+
+        <q-separator />
+
+        <q-card-section
+          style="max-height: 50vh"
+          class="scroll"
+        >
+          <template v-if="!item || !item.polls || item.polls.length == 0">
+            <h5>Without polls</h5>
+          </template>
+          <template v-if="item && item.polls.length > 0">
+            <!--<tracks-list :poll="item" />-->
+            <!--<pollCard
+              v-for="poll in item.polls"
+              :key="poll.id"
+              :poll="poll"
+            />-->
+            <pollTableGrid :items="item.polls" />
+          </template>
+        </q-card-section>
+      </q-card>
+
+      <br><br>
+
+      <q-card
+        flat
+        bordered
+        class="center-card"
+      >
+        <q-toolbar>
+          <q-card-section class="card-title">
             <div>Members</div>
           </q-card-section>
           <q-space />
@@ -246,6 +287,10 @@ import { show } from 'src/utils/vuexer';
 import ShowMixin from 'src/common/mixins/ShowMixin';
 const servicePrefix = 'Organization';
 const { getters, actions } = show(servicePrefix);
+// import tracksList from 'src/components/TracksList';
+// import pollCard from 'src/components/PollCard';
+// import pollTableList from 'src/components/PollTableList';
+import pollTableGrid from 'src/components/PollTableGrid';
 import membersList from 'src/components/MembersList';
 
 export default {
@@ -253,6 +298,10 @@ export default {
   servicePrefix,
   mixins: [ShowMixin],
   components: {
+    // tracksList,
+    // pollCard,
+    // pollTableList,
+    pollTableGrid,
     membersList,
   },
   data() {

@@ -1,11 +1,12 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MyLayout.vue'),
+    // component: () => import('layouts/MyLayout.vue'),
     // component: () => import('layouts/MyLayoutDouble.vue'), // Lleig
     // component: () => import('layouts/MyLayoutGrouped.vue'),
     // component: () => import('layouts/CardLayout.vue'),
     // component: () => import('layouts/IosLayout.vue'), // Nomes per mobil, pero de color primari
+    component: () => import('layouts/DrawerLayout.vue'),
     redirect: { name: 'Polls' },
     children: [
       {
@@ -19,7 +20,7 @@ const routes = [
         component: () => import('pages/Poll.vue'),
         meta: {
           breadcrumb: [
-            { label: 'Polls', icon: 'gavel' },
+            { label: 'Polls', icon: 'gavel', to: { name: 'Polls' } },
           ],
         },
       },

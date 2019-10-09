@@ -39,47 +39,28 @@ class Poll
      * @ORM\Id
      * @ORM\Column(name="id", type="uuid", unique=true, nullable=false)
      * @ApiProperty(identifier=true)
-     * @Groups({"poll:read", "poll:readAll", "track:read"})
+     * @Groups({"poll:read", "poll:readAll", "track:read", "organization:readAll"})
      */
     private $id;
 
     /**
-     * @var string The name of the poll
+     * @var string The name of the poll, this value is also the name showed in the Spotify playlist
      *
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/text")
-     * @Groups({"poll:read", "poll:readAll", "poll:write"})
+     * @Groups({"poll:read", "poll:readAll", "poll:write", "organization:readAll"})
      */
     private $name;
 
     /**
-     * @var \DateTimeInterface The start date of this poll
-     *
-     * @ORM\Column(type="datetimetz_immutable", nullable=false)
-     * @Assert\NotNull
-     * @ApiProperty(iri="http://schema.org/datePublished")
-     * @Groups({"poll:read", "poll:readAll"})
-     */
-    private $startDate;
-
-    /**
-     * @var \DateTimeInterface|null The end date of this poll
-     *
-     * @ORM\Column(type="datetimetz_immutable", nullable=true)
-     * @ApiProperty(iri="http://schema.org/expires")
-     * @Groups({"poll:read", "poll:readAll", "poll:write"})
-     */
-    private $endDate;
-
-    /**
-     * @var string|null String with a crontab style restart command. If setted, this poll is never closed,
-     * the winner song goes to winner playlist and the others to the historic playlist.
+     * @var string|null The description of the poll, this value is also the description showed in the Spotify playlist
      *
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"poll:read", "poll:readAll", "poll:write"})
+     * @ApiProperty(iri="http://schema.org/text")
+     * @Groups({"poll:read", "poll:readAll", "poll:write", "organization:readAll"})
      */
-    private $restartDate;
+    private $description;
 
     /**
      * @var array|null All the images from the Spotify playlist
@@ -91,7 +72,7 @@ class Poll
      *
      * @ORM\Column(type="json", nullable=true)
      * @ApiProperty(iri="http://schema.org/image")
-     * @Groups({"poll:read", "poll:readAll"})
+     * @Groups({"poll:read", "poll:readAll", "organization:readAll"})
      */
     private $spotifyPlaylistImages;
 
@@ -148,6 +129,34 @@ class Poll
      * @Groups({"poll:read", "poll:readAll", "poll:write"})
      */
     private $spotifyHistoricPlaylistUri = null;
+
+    /**
+     * @var \DateTimeInterface The start date of this poll
+     *
+     * @ORM\Column(type="datetimetz_immutable", nullable=false)
+     * @Assert\NotNull
+     * @ApiProperty(iri="http://schema.org/datePublished")
+     * @Groups({"poll:read", "poll:readAll"})
+     */
+    private $startDate;
+
+    /**
+     * @var \DateTimeInterface|null The end date of this poll
+     *
+     * @ORM\Column(type="datetimetz_immutable", nullable=true)
+     * @ApiProperty(iri="http://schema.org/expires")
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
+     */
+    private $endDate;
+
+    /**
+     * @var string|null String with a crontab style restart command. If setted, this poll is never closed,
+     * the winner song goes to winner playlist and the others to the historic playlist.
+     *
+     * @ORM\Column(type="string", nullable=true)
+     * @Groups({"poll:read", "poll:readAll", "poll:write"})
+     */
+    private $restartDate;
 
     /**
      * @var bool Is this poll visible to anyone or only to the members of the organization?
@@ -276,31 +285,14 @@ class Poll
         return $this;
     }
 
-    public function getStartDate(): \DateTimeImmutable
+    public function getDescription(): ?string
     {
-        return $this->startDate;
+        return $this->description;
     }
 
-    public function getEndDate(): ?\DateTimeImmutable
+    public function setDescription(?string $description): self
     {
-        return $this->endDate;
-    }
-
-    public function markAsEnded(): self
-    {
-        $this->endDate = new \DateTimeImmutable();
-        return $this;
-    }
-
-    public function getRestartDate(): ?string
-    {
-        return $this->restartDate;
-    }
-
-    public function setRestartDate(?string $restartDate): self
-    {
-        //@ToDo: Check crontab style
-        $this->restartDate = $restartDate;
+        $this->description = $description;
         return $this;
     }
 
@@ -407,6 +399,34 @@ class Poll
         return $this;
     }
 
+    public function getStartDate(): \DateTimeImmutable
+    {
+        return $this->startDate;
+    }
+
+    public function getEndDate(): ?\DateTimeImmutable
+    {
+        return $this->endDate;
+    }
+
+    public function markAsEnded(): self
+    {
+        $this->endDate = new \DateTimeImmutable();
+        return $this;
+    }
+
+    public function getRestartDate(): ?string
+    {
+        return $this->restartDate;
+    }
+
+    public function setRestartDate(?string $restartDate): self
+    {
+        //@ToDo: Check crontab style
+        $this->restartDate = $restartDate;
+        return $this;
+    }
+
     public function isPublicVisibility(): bool
     {
         return $this->publicVisibility;
@@ -440,14 +460,14 @@ class Poll
         return $this;
     }
 
-    public function whoCanAddTrack(): ?bool
+    public function whoCanAddTrack(): ?int
     {
         return $this->whoCanAddTrack;
     }
 
     public function setWhoCanAddTrack(?int $whoCanAddTrack): self
     {
-        // null => nobody, 0 => owner, 1 => admin, 2 => member, 3 => invited, 4 => anyone
+        // null => nobody, 0 => owner, 1 => admin, 2 => member, 3 => invited, 4 => everyone
         if ($whoCanAddTrack !== null) {
             $whoCanAddTrack = intval($whoCanAddTrack, 10);
         }
@@ -511,7 +531,7 @@ class Poll
     }
 
     /**
-     * @Groups({"poll:read", "poll:readAll"})
+     * @Groups({"poll:read", "poll:readAll", "organization:readAll"})
      */
     public function getNumTracks(): int
     {
@@ -577,7 +597,7 @@ class Poll
     }
 
     /**
-     * @Groups({"poll:read", "poll:readAll"})
+     * @Groups({"poll:read", "poll:readAll", "organization:readAll"})
      */
     public function getNumVotes(): int
     {

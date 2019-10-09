@@ -11,7 +11,7 @@
     </q-item-label>
 
     <!-- eslint-disable vue/valid-v-for -->
-    <template v-for="track in poll.tracksRaw">
+    <template v-for="track in poll.tracks">
       <q-separator spaced />
 
       <q-item

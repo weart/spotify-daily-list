@@ -1,8 +1,10 @@
 security:
     encoders:
         App\Entity\User:
+            # Changed for notice deprecation log
+            algorithm: sodium
             # Changed for JWT
-            algorithm: argon2i
+#            algorithm: argon2i
 #            algorithm: bcrypt
 #            cost: 12
     

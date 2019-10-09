@@ -4,6 +4,7 @@
 
 Poll:
   * Change order
+  * Add field description (string)
   * anon_can_add_track -> who_can_add_track (smallint)
   * Add field spotifyPlaylistPublic (bool)
   * Add field spotifyPlaylistCollaborative (bool)

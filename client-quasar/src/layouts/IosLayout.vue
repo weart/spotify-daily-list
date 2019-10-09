@@ -3,8 +3,8 @@
     <q-layout
       view="lHh lpr lFf"
       container
+      style="height: 95vh"
       class="shadow-2 rounded-borders"
-      style="height: 1000px"
     >
       <q-header
         bordered
@@ -37,13 +37,15 @@
           indicator-color="transparent"
           class="text-grey"
         >
-          <q-tab
+          <q-route-tab
             name="gavel"
             label="Polls"
+            to="/polls"
           />
-          <q-tab
+          <q-route-tab
             name="supervisor_account"
             label="Organizations"
+            to="/orgs"
           />
         </q-tabs>
       </q-footer>
