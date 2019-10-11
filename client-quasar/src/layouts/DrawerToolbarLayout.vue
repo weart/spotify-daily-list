@@ -13,7 +13,18 @@
           aria-label="Menu"
           icon="menu"
         />
-
+        <q-btn
+          color="primary"
+          icon="gavel"
+          label="Polls"
+          to="/polls"
+        />
+        <q-btn
+          icon="supervisor_account"
+          label="Groups"
+          to="/orgs"
+        />
+        <q-space />
         <q-toolbar-title>
           Discoveryfy: {{ this.$route.name }}
         </q-toolbar-title>
@@ -129,7 +140,7 @@ import RegisterDialog from "../components/RegisterDialog";
 import auth from 'src/utils/auth';
 
 export default {
-  name: 'DrawerLayout',
+  name: 'DrawerToolbarLayout',
   servicePrefix,
   mixins: [ListMixin],
   components: {

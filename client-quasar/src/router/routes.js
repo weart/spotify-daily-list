@@ -6,7 +6,8 @@ const routes = [
     // component: () => import('layouts/MyLayoutGrouped.vue'),
     // component: () => import('layouts/CardLayout.vue'),
     // component: () => import('layouts/IosLayout.vue'), // Nomes per mobil, pero de color primari
-    component: () => import('layouts/DrawerLayout.vue'),
+    // component: () => import('layouts/DrawerLayout.vue'),
+    component: () => import('layouts/DrawerToolbarLayout.vue'),
     redirect: { name: 'Polls' },
     children: [
       {
