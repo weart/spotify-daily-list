@@ -5,14 +5,16 @@
   >
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
-          icon="menu"
-        />
+        <template v-if="organizations.length > 0">
+          <q-btn
+            flat
+            dense
+            round
+            @click="leftDrawerOpen = !leftDrawerOpen"
+            aria-label="Menu"
+            icon="menu"
+          />
+        </template>
         <q-btn
           color="primary"
           icon="gavel"
@@ -51,67 +53,69 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-2"
-    >
-      <q-list>
-        <q-expansion-item
-          v-for="organization in organizations"
-          :key="organization.id"
-          :label="organization.name"
-          :to="`/org/${organization.id}`"
-          default-opened
-          expand-separator
-          expand-icon-toggle
-        >
-          <q-item
-            v-for="poll in itemsFilterOrgId(organization.id)"
-            :key="poll.id"
-            tag="a"
-            v-ripple
-            :to="{ name: 'Poll', params: { id: poll.id } }"
+    <template v-if="organizations.length > 0">
+      <q-drawer
+        v-model="leftDrawerOpen"
+        show-if-above
+        bordered
+        content-class="bg-grey-2"
+      >
+        <q-list>
+          <q-expansion-item
+            v-for="organization in organizations"
+            :key="organization.id"
+            :label="`${organization.name} Playlists`"
+            :to="`/org/${organization.id}`"
+            default-opened
+            expand-separator
+            expand-icon-toggle
           >
-            <q-item-section avatar>
-              <q-icon name="school" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ poll.name }}</q-item-label>
-              <q-item-label caption>
-                {{ poll.description }}
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
-        <!--
-        <q-expansion-item
-          label="Sonosuite"
-          default-opened
-          expand-separator
-          expand-icon-toggle
-          to="/org/13959f26-d6ee-48cc-8e7c-ee4dd26b06be"
-        >
-          <q-item
-            clickable
-            tag="a"
-            to="/poll/c8b38746-edb9-43b7-bffc-f9ff5222a6a4"
+            <q-item
+              v-for="poll in itemsFilterOrgId(organization.id)"
+              :key="poll.id"
+              tag="a"
+              v-ripple
+              :to="{ name: 'Poll', params: { id: poll.id } }"
+            >
+              <q-item-section avatar>
+                <q-icon name="school" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ poll.name }}</q-item-label>
+                <q-item-label caption>
+                  {{ poll.description }}
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-expansion-item>
+          <!--
+          <q-expansion-item
+            label="Sonosuite"
+            default-opened
+            expand-separator
+            expand-icon-toggle
+            to="/org/13959f26-d6ee-48cc-8e7c-ee4dd26b06be"
           >
-            <q-item-section avatar>
-              <q-icon name="school" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Sonosuite Weekly Playlist</q-item-label>
-              <q-item-label caption>
-                Public playlist restarted weekly
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
-        -->
-      </q-list>
-    </q-drawer>
+            <q-item
+              clickable
+              tag="a"
+              to="/poll/c8b38746-edb9-43b7-bffc-f9ff5222a6a4"
+            >
+              <q-item-section avatar>
+                <q-icon name="school" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Sonosuite Weekly Playlist</q-item-label>
+                <q-item-label caption>
+                  Public playlist restarted weekly
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-expansion-item>
+          -->
+        </q-list>
+      </q-drawer>
+    </template>
 
     <q-page-container>
       <router-view
@@ -172,6 +176,7 @@ export default {
   computed: {
     ...getters,
     organizations () {
+      if (_.size(this.items) <1) return [];
       return _.uniqBy(_.map(this.items,'organization'),'id');
     },
   },

@@ -1,29 +1,33 @@
 # Discoveryfy
 
-WIP
+Tiny WebApp for Share & Rate Songs in Spotify.
+
+Create collaborative playlists in Spotify with your friends and colleagues and rate the songs.
+
+More information in api/README.md & client-quasar/README.md.
 
 Docs used
 -------
-https://junghanns.it/posts/cqrs-and-eventsourcing-with-api-platform-ii/
-https://www.nielsvandermolen.com/symfony-4-api-platform-application/
+* https://junghanns.it/posts/cqrs-and-eventsourcing-with-api-platform-ii/
+* https://www.nielsvandermolen.com/symfony-4-api-platform-application/
 
-https://medium.com/@rebolon/how-to-bind-your-favorite-js-framework-with-symfony-4-8c9ba86e2b8d
-https://www.myalerts.org/demo/quasar#/
-https://github.com/Rebolon/php-sf-flex-webpack-encore-vuejs/blob/bff3370b3f98e87a008c1a5cf4a545ee8146433e/assets/js/form-quasar-vuejs/app.js
-https://github.com/Rebolon/php-sf-flex-webpack-encore-vuejs/blob/bff3370b3f98e87a008c1a5cf4a545ee8146433e/assets/js/form-quasar-vuejs/components/Book.vue
+* https://medium.com/@rebolon/how-to-bind-your-favorite-js-framework-with-symfony-4-8c9ba86e2b8d
+* https://www.myalerts.org/demo/quasar#/
+* https://github.com/Rebolon/php-sf-flex-webpack-encore-vuejs/blob/bff3370b3f98e87a008c1a5cf4a545ee8146433e/assets/js/form-quasar-vuejs/app.js
+* https://github.com/Rebolon/php-sf-flex-webpack-encore-vuejs/blob/bff3370b3f98e87a008c1a5cf4a545ee8146433e/assets/js/form-quasar-vuejs/components/Book.vue
 
 Useful documentation:
 -------
-https://api-platform.com/docs/core/events/
-https://symfony.com/doc/current/reference/events.html#kernel-events
-https://quasar.dev/vue-components/
+* https://api-platform.com/docs/core/events/
+* https://symfony.com/doc/current/reference/events.html#kernel-events
+* https://quasar.dev/vue-components/
 
 Pending docs:
 -------
-https://vue-apollo.netlify.com/
-https://developer.okta.com/blog/2018/06/14/php-crud-app-symfony-vue
-https://github.com/hasura/graphql-engine/tree/master/community/sample-apps/quasar-framework-vue-graphql
-https://jasonwatmore.com/post/2018/07/06/vue-vuex-jwt-authentication-tutorial-example
+* https://vue-apollo.netlify.com/
+* https://developer.okta.com/blog/2018/06/14/php-crud-app-symfony-vue
+* https://github.com/hasura/graphql-engine/tree/master/community/sample-apps/quasar-framework-vue-graphql
+* https://jasonwatmore.com/post/2018/07/06/vue-vuex-jwt-authentication-tutorial-example
 
 
 Useful commands
