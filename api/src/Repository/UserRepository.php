@@ -4,8 +4,13 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityManager;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
+use Doctrine\Common\Collections\Criteria;
+//use Doctrine\ORM\EntityManager;
+//use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,19 +21,18 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 final class UserRepository extends ServiceEntityRepository
 {
 
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
     }
 
     /**
      * @return EntityManager
-     */
+     *
     public function getEm(): EntityManager
     {
         return $this->_em;
     }
-/*
     public function getSpotifyListOwner(): User
     {
         return $this->getEm()->createQueryBuilder()

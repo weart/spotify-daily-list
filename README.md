@@ -42,6 +42,11 @@ Check machine ip:
 docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' spotifydailylist_client-quasar_1
 ```
 
+Upgrade everything:
+```bash
+./update-deps.sh
+```
+
 Configure ngrok
 -------
 Create the file ~/.ngrok2/ngrok.yml with the follow content:

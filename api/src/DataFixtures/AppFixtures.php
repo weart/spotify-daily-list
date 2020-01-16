@@ -200,7 +200,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
             $poll = new Poll($organization);
             foreach ($poll_schema as $property => $value) {
 //                call_user_func(array($poll, 'set'.$property), $value);
-                 $poll->{'set'.$property}($value);
+                $poll->{'set'.$property}($value);
             }
             if ($poll->whoCanAddTrack() !== null) {
                 $num_polls_can_add_track++;
