@@ -150,12 +150,17 @@ class User implements UserInterface
 
     CONST ADMIN = 'ROLE_ADMIN';
     CONST MEMBER = 'ROLE_USER';
-
+    /**
+     * @var array Roles of the user in this app: ADMIN = ROLE_ADMIN; MEMBER = ROLE_USER;
+     *
+     * @ORM\Column(name="roles", type="simple_array", nullable=false)
+     * @Assert\NotNull
+     */
+    private $roles = [];
     public static function getValidRoles(): array
     {
         return [ self::ADMIN, self::MEMBER ];
     }
-
     public static function isValidRol(string $rol): bool
     {
         if(!in_array($rol, self::getValidRoles(), true)) {
@@ -163,14 +168,6 @@ class User implements UserInterface
         }
         return true;
     }
-
-    /**
-     * @var array Roles of the user in this app: ADMIN = ROLE_ADMIN; MEMBER = ROLE_USER;
-     *
-     * @ORM\Column(name="roles", type="json", nullable=false)
-     * @Assert\NotNull
-     */
-    private $roles = [];
 
     /**
      * @var Session[] Sessions created by this user
@@ -366,16 +363,20 @@ class User implements UserInterface
 
     public function getRoles(): array
     {
-        $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+//        $this->roles[] = self::MEMBER;
+        $this->addRole(self::MEMBER);
+        return array_unique($this->roles);
+    }
+    public function getRoleNames(): array
+    {
+        return $this->getRoles();
     }
 
     public function setRoles(array $roles): self
     {
-        $this->roles = new ArrayCollection();
+//        $this->roles = new ArrayCollection();
+        $this->roles = [];
         foreach($roles as $rol) {
             $this->addRole($rol);
         }
@@ -387,10 +388,12 @@ class User implements UserInterface
         if (!self::isValidRol($rol)) {
             throw new \InvalidArgumentException(sprintf('Rol %s is not valid', $rol));
         }
-
-        if (!$this->roles->contains($rol)) {
-            return $this->roles->add($rol);
+        if (!in_array($rol, $this->roles, true)) {
+            $this->roles[] = $rol;
         }
+//        if (!$this->roles->contains($rol)) {
+//            return $this->roles->add($rol);
+//        }
         return true;
     }
 
@@ -415,6 +418,11 @@ class User implements UserInterface
     public function removeMembership(Organization $organization): bool
     {
         return $this->getMembershipsRaw()->removeElement($organization);
+    }
+
+    public function getSession(): Session
+    {
+        return $this->getSessionsRaw()->last();
     }
 
     public function getSessions(): array

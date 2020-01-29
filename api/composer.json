@@ -10,13 +10,13 @@
         "jwilsson/spotify-web-api-php": "^2.8",
         "lexik/jwt-authentication-bundle": "^2.6",
         "ramsey/uuid-doctrine": "^1.5",
-        "symfony/console": "4.3.*",
-        "symfony/dotenv": "4.3.*",
+        "symfony/console": "4.4.*",
+        "symfony/dotenv": "4.4.*",
         "symfony/flex": "^1.1",
-        "symfony/framework-bundle": "4.3.*",
-        "symfony/mercure-bundle": "*",
-        "symfony/security-bundle": "4.3.*",
-        "symfony/yaml": "4.3.*"
+        "symfony/framework-bundle": "4.4.*",
+        "symfony/mercure-bundle": "^0.2",
+        "symfony/security-bundle": "4.4.*",
+        "symfony/yaml": "4.4.*"
     },
     "require-dev": {
         "api-platform/schema-generator": "^2.1",
@@ -66,7 +66,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "4.3.*"
+            "require": "4.4.*"
         }
     }
 }

@@ -15,19 +15,47 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * An organization such as a school, NGO, corporation, club, etc.
  *
- *     attributes={"access_control"="is_granted('ROLE_ADMIN')"},
  * @ApiResource(
  *     iri="https://schema.org/Organization",
- *     collectionOperations={"get"},
+ *     collectionOperations={
+ *         "get"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:org:list", "member:org:list", "admin:org:list"},
+ *                 "swagger_definition_name"="organization:list"
+ *             },
+ *             "openapi_context"={"tags"={"Organization"},"summary"={"List all the organizations"}},
+ *         },
+ *         "post"={
+ *             "denormalizationContext"={
+ *                 "groups"={"anon:org:create", "member:org:create", "admin:org:create"},
+ *                 "swagger_definition_name"="organization:create"
+ *             },
+ *             "openapi_context"={"tags"={"Organization"},"summary"={"Create new organization"}},
+ *         },
+ *     },
  *     itemOperations={
  *         "get"={
- *             "normalization_context"={"groups"={"organization:readAll"}}
+ *             "normalizationContext"={
+ *                 "groups"={"anon:org:get", "member:org:get", "admin:org:get"},
+ *                 "swagger_definition_name"="organization:get"
+ *             },
+ *             "openapi_context"={"tags"={"Organization"},"summary"={"Get information about an organization"}},
  *         },
- *         "put",
- *         "delete",
+ *         "put"={
+ *             "denormalizationContext"={
+ *                 "groups"={"anon:org:replace", "member:org:replace", "admin:org:replace"},
+ *                 "swagger_definition_name"="organization:replace"
+ *             },
+ *             "openapi_context"={"tags"={"Organization"},"summary"={"Change an organization"}},
+ *         },
+ *         "delete"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:org:delete", "member:org:delete", "admin:org:delete"},
+ *                 "swagger_definition_name"="organization:delete"
+ *             },
+ *             "openapi_context"={"tags"={"Organization"},"summary"={"Remove an organization"}},
+ *         },
  *     },
- *     normalizationContext={"groups"={"organization:read"}, "swagger_definition_name"="GetOrganization"},
- *     denormalizationContext={"groups"={"organization:write"}, "swagger_definition_name"="WriteOrganization"},
  * )
  * @ORM\Entity
  * @ORM\Table(name="organizations")
@@ -40,7 +68,7 @@ class Organization
      * @ORM\Id
      * @ORM\Column(name="id", type="uuid", unique=true, nullable=false)
      * @ApiProperty(identifier=true)
-     * @Groups({"organization:read", "organization:readAll", "membership:read", "poll:read", "poll:readAll"})
+     * @Groups({"organization:read", "organization:readAll", "member:member:list", "poll:read", "poll:readAll"})
      */
     private $id;
 

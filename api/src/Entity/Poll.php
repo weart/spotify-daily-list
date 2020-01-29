@@ -17,16 +17,45 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiResource(
  *     iri="https://schema.org/Question",
- *     collectionOperations={"get","post"},
+ *     collectionOperations={
+ *         "get"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:poll:list", "member:poll:list", "admin:poll:list"},
+ *                 "swagger_definition_name"="poll:list"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"List all the polls"}},
+ *         },
+ *         "post"={
+ *             "denormalizationContext"={
+ *                 "groups"={"anon:poll:create", "member:poll:create", "admin:poll:create"},
+ *                 "swagger_definition_name"="poll:create"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Create new poll"}},
+ *         },
+ *     },
  *     itemOperations={
  *         "get"={
- *             "normalization_context"={"groups"={"poll:readAll"}}
+ *             "normalizationContext"={
+ *                 "groups"={"anon:poll:get", "member:poll:get", "admin:poll:get"},
+ *                 "swagger_definition_name"="poll:get"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Get information about a poll"}},
  *         },
- *         "put",
- *         "delete",
+ *         "put"={
+ *             "denormalizationContext"={
+ *                 "groups"={"anon:poll:replace", "member:poll:replace", "admin:poll:replace"},
+ *                 "swagger_definition_name"="poll:replace"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Change a poll"}},
+ *         },
+ *         "delete"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:poll:delete", "member:poll:delete", "admin:poll:delete"},
+ *                 "swagger_definition_name"="poll:delete"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Remove a poll"}},
+ *         },
  *     },
- *     normalizationContext={"groups"={"poll:read"}, "swagger_definition_name"="ReadPoll"},
- *     denormalizationContext={"groups"={"poll:write"}, "swagger_definition_name"="WritePoll"}
  * )
  * @ORM\Entity
  * @ORM\Table(name="polls")

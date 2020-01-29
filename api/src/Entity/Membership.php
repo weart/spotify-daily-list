@@ -14,15 +14,45 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiResource(
  *     iri="https://schema.org/ProgramMembership",
- *     attributes={"access_control"="is_granted('ROLE_ADMIN')"},
- *     collectionOperations={"post"},
- *     itemOperations={
- *         "get",
- *         "put",
- *         "delete",
+ *     collectionOperations={
+ *         "get"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:member:list", "member:member:list", "admin:member:list"},
+ *                 "swagger_definition_name"="membership:list"
+ *             },
+ *             "openapi_context"={"tags"={"Organization"},"summary"={"List all the members of an organization"}},
+ *         },
+ *         "post"={
+ *             "denormalizationContext"={
+ *                 "groups"={"anon:member:create", "member:member:create", "admin:member:create"},
+ *                 "swagger_definition_name"="membership:create"
+ *             },
+ *             "openapi_context"={"tags"={"Organization"},"summary"={"Create new member in an organization"}},
+ *         },
  *     },
- *     normalizationContext={"groups"={"membership:read"}, "swagger_definition_name"="ReadMembership"},
- *     denormalizationContext={"groups"={"membership:write"}, "swagger_definition_name"="WriteMembership"}
+ *     itemOperations={
+ *         "get"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:member:get", "member:member:get", "admin:member:get"},
+ *                 "swagger_definition_name"="membership:get"
+ *             },
+ *             "openapi_context"={"tags"={"Organization"},"summary"={"Get the membership of a user in an organization"}},
+ *         },
+ *         "put"={
+ *             "denormalizationContext"={
+ *                 "groups"={"anon:member:replace", "member:member:replace", "admin:member:replace"},
+ *                 "swagger_definition_name"="membership:replace"
+ *             },
+ *             "openapi_context"={"tags"={"Organization"},"summary"={"Change the membership in an organization"}},
+ *         },
+ *         "delete"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:member:delete", "member:member:delete", "admin:member:delete"},
+ *                 "swagger_definition_name"="membership:delete"
+ *             },
+ *             "openapi_context"={"tags"={"Organization"},"summary"={"Remove a member from an organization"}},
+ *         },
+ *     },
  * )
  * @ORM\Entity
  * @ORM\Table(name="memberships")
@@ -35,7 +65,7 @@ class Membership
      * @ORM\Id
      * @ORM\Column(name="id", type="uuid", unique=true, nullable=false)
      * @ApiProperty(identifier=true)
-     * @Groups({"organization:read", "membership:read", "organization:readAll"})
+     * @Groups({"member:member:list", "member:member:get", "member:member:replace", "member:member:delete", "organization:read", "organization:readAll"})
      */
     private $id;
 
@@ -43,7 +73,7 @@ class Membership
      * @var \DateTimeInterface DateTime when this object is created
      *
      * @ORM\Column(type="datetimetz_immutable", nullable=false)
-     * @Groups({"membership:read", "organization:readAll"})
+     * @Groups({"member:member:list", "member:member:get", "organization:readAll"})
      */
     private $createdAt;
 
@@ -70,7 +100,7 @@ class Membership
      *
      * @ORM\Column(type="smallint", nullable=false)
      * @Assert\NotNull
-     * @Groups({"membership:read", "membership:write", "organization:readAll"})
+     * @Groups({"member:member:list", "member:member:get", "admin:member:replace", "organization:readAll"})
      */
     private $rol;
 
@@ -81,7 +111,7 @@ class Membership
      * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/member")
-     * @Groups({"membership:read", "organization:readAll"})
+     * @Groups({"member:member:get", "organization:readAll"})
      */
     private $member;
 
@@ -92,7 +122,7 @@ class Membership
      * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=false)
      * @Assert\NotNull
      * @ApiProperty(iri="http://schema.org/hostingOrganization")
-     * @Groups("membership:read")
+     * @Groups({"member:member:list", "member:member:get"})
      */
     private $organization;
 

@@ -10,14 +10,49 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Vote
+ * Vote / Rating
  *
  * @ApiResource(
  *     iri="https://schema.org/Rating",
- *     collectionOperations={"get"},
- *     itemOperations={"get","put","delete"},
- *     normalizationContext={"groups"={"vote:read"}, "swagger_definition_name"="ReadVote"},
- *     denormalizationContext={"groups"={"vote:write"}, "swagger_definition_name"="WriteVote"}
+ *     collectionOperations={
+ *         "get"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:vote:list", "member:vote:list", "admin:vote:list"},
+ *                 "swagger_definition_name"="vote:list"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"List all the votes in a poll"}},
+ *         },
+ *         "post"={
+ *             "denormalizationContext"={
+ *                 "groups"={"anon:vote:create", "member:vote:create", "admin:vote:create"},
+ *                 "swagger_definition_name"="vote:create"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Emit your vote into a poll"}},
+ *         },
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:vote:get", "member:vote:get", "admin:vote:get"},
+ *                 "swagger_definition_name"="vote:get"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Get information about a vote in a poll"}},
+ *         },
+ *         "put"={
+ *             "denormalizationContext"={
+ *                 "groups"={"anon:vote:replace", "member:vote:replace", "admin:vote:replace"},
+ *                 "swagger_definition_name"="vote:replace"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Change your vote in a poll"}},
+ *         },
+ *         "delete"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:vote:delete", "member:vote:delete", "admin:vote:delete"},
+ *                 "swagger_definition_name"="vote:delete"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Remove your vote in a poll"}},
+ *         },
+ *     },
  * )
  * @ORM\Entity
  * @ORM\Table(name="votes")

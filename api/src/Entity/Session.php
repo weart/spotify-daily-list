@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 
 /**
  * @ApiResource(
@@ -55,6 +56,30 @@ class Session
     private $createdAt;
 
     /**
+     * @ORM\Column(type="string", unique=false, nullable=true, length=128)
+     * should be: ORM\Column(type="string", unique=true, nullable=false, length=128)
+     */
+    private $sessId;
+
+    /**
+     * @ORM\Column(type="blob", nullable=true)
+     * should be: ORM\Column(type="blob", nullable=false)
+     */
+    private $sessData;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"unsigned"=true})
+     * should be: ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
+     */
+    private $sessTime;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"unsigned"=true})
+     * should be: ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
+     */
+    private $sessLifetime;
+
+    /**
      * @var User|null
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="sessions")
@@ -79,10 +104,16 @@ class Session
      */
     private $votes;
 
-    public function __construct(?string $name = null)
+    public function __construct(?SymfonySession $symfonySession, ?string $name = null)
     {
         $this->id = Uuid::uuid4();
         $this->createdAt = new \DateTimeImmutable();
+        if ($symfonySession) {
+            $this->sessId = $symfonySession->getId();
+            $this->sessData = $symfonySession->get('data');
+            $this->sessTime = $symfonySession->get('time');
+            $this->sessLifetime = $symfonySession->get('lifetime');
+        }
         $this->setName($name);
         $this->tracks = new ArrayCollection();
         $this->votes = new ArrayCollection();

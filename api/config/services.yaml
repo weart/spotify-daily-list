@@ -25,3 +25,24 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # https://api-platform.com/docs/core/serialization/#changing-the-serialization-context-dynamically
+    App\Serializer\SecurityContextBuilder:
+        decorates: 'api_platform.serializer.context_builder'
+        arguments: [ '@App\Serializer\SecurityContextBuilder.inner' ]
+        autoconfigure: false
+
+    # https://api-platform.com/docs/core/extensions/
+    App\Doctrine\CurrentUserExtension:
+        tags:
+            - { name: api_platform.doctrine.orm.query_extension.collection }
+            - { name: api_platform.doctrine.orm.query_extension.item }
+
+#    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+#        arguments:
+#            - !service { class: PDO, factory: ['@database_connection', 'getWrappedConnection'] }
+#            - { db_table: 'session' }
+#    session:
+#        public: true
+#        class: Symfony\Component\HttpFoundation\Session\Session
+#        arguments: ['@session.storage', '@session.namespacedattributebag', '@session.flash_bag']

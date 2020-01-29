@@ -14,10 +14,45 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiResource(
  *     iri="https://schema.org/MusicRecording",
- *     collectionOperations={},
- *     itemOperations={"get","put","delete"},
- *     normalizationContext={"groups"={"track:read"}, "swagger_definition_name"="ReadTrack"},
- *     denormalizationContext={"groups"={"track:write"}, "swagger_definition_name"="WriteTrack"}
+ *     collectionOperations={
+ *         "get"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:track:list", "member:track:list", "admin:track:list"},
+ *                 "swagger_definition_name"="track:list"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"List all the tracks @To Do: of a poll!)"}},
+ *         },
+ *         "post"={
+ *             "denormalizationContext"={
+ *                 "groups"={"anon:track:create", "member:track:create", "admin:track:create"},
+ *                 "swagger_definition_name"="track:create"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Create new tracks @To Do: in an poll"}},
+ *         },
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:track:get", "member:track:get", "admin:track:get"},
+ *                 "swagger_definition_name"="track:get"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Get all the information about a track in a poll"}},
+ *         },
+ *         "put"={
+ *             "denormalizationContext"={
+ *                 "groups"={"anon:track:replace", "member:track:replace", "admin:track:replace"},
+ *                 "swagger_definition_name"="track:replace"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Change the track in a poll"}},
+ *         },
+ *         "delete"={
+ *             "normalizationContext"={
+ *                 "groups"={"anon:track:delete", "member:track:delete", "admin:track:delete"},
+ *                 "swagger_definition_name"="track:delete"
+ *             },
+ *             "openapi_context"={"tags"={"Poll"},"summary"={"Remove a track from a poll"}},
+ *         },
+ *     },
  * )
  * @ORM\Entity
  * @ORM\Table(name="tracks")

@@ -48,6 +48,35 @@ Add fixtures:
 docker-compose exec php bin/console doctrine:fixtures:load -n
 ```
 
+Generate new SSH Keys:
+```shell
+docker-compose exec php  mkdir -p config/jwt
+docker-compose exec php  openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
+docker-compose exec php  openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
+```
+Edit `.env` file with the keys password.
+
+Or all in one with this cmd from https://api-platform.com/docs/core/jwt/:
+```shell
+docker-compose exec php sh -c '
+    set -e
+    apk add openssl
+    mkdir -p config/jwt
+    jwt_passhrase=$(grep ''^JWT_PASSPHRASE='' .env | cut -f 2 -d ''='')
+    echo "$jwt_passhrase" | openssl genpkey -out config/jwt/private.pem -pass stdin -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
+    echo "$jwt_passhrase" | openssl pkey -in config/jwt/private.pem -passin stdin -out config/jwt/public.pem -pubout
+    setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+    setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+'
+```
+In case first openssl command forces you to input password use following to get the private key decrypted (https://emirkarsiyakali.com/implementing-jwt-authentication-to-your-api-platform-application-885f014d3358)
+```shell
+$ openssl rsa -in config/jwt/private.pem -out config/jwt/private2.pem
+$ mv config/jwt/private.pem config/jwt/private.pem-back
+$ mv config/jwt/private2.pem config/jwt/private.pem
+```
+More info: https://github.com/lexik/LexikJWTAuthenticationBundle/blob/master/Resources/doc/index.md#generate-the-ssh-keys
+
 Roadmap
 -------
 * Organizations

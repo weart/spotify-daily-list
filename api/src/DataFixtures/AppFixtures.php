@@ -11,8 +11,12 @@ use App\Entity\User;
 use App\Entity\Vote;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
+//use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
+//use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 class AppFixtures extends Fixture implements FixtureGroupInterface
 {
@@ -33,8 +37,12 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         $organization = new Organization('Discoveryfy');
         $manager->persist($organization);
         $user = new User('Leninux', 'discoverify@fabri.cat');
+        $user->setRoles([User::MEMBER]);
         $user->setPassword($this->passwordEncoder->encodePassword($user,'1234567890'));
-        $user_session = new Session($user->getUsername());
+        $symfony_session = new SymfonySession(new MockArraySessionStorage()); //MockFileSessionStorage
+        // @ToDo
+//        var_dump($symfony_session->all());exit;
+        $user_session = new Session($symfony_session, $user->getUsername());
         $manager->persist($user_session);
         $user->addSession($user_session);
 //        $user_session->setUser($user);
@@ -44,7 +52,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
 
         $sessions = [];
         for ($i = 0; $i < 10; $i++) {
-            $session = new Session('Voter '.$i);
+            $session = new Session(new SymfonySession(new MockArraySessionStorage()), 'Voter '.$i);
             $manager->persist($session);
             $sessions[$i] = $session;
         }
